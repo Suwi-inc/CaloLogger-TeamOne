@@ -10,6 +10,7 @@ python = "^3.10"
 pytest = "^8.1.1"
 pytest-mock = "^3.14.0"
 mutmut = "^2.4.4"
+fastapi = "^0.110.1"
 
 
 [build-system]
