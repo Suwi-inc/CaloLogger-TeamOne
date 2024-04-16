@@ -58,24 +58,25 @@ calorie-tracker/
 │      ├── models.py              # Database models
 │      ├── schemas.py             # Pydantic schemas for request and response models
 │      ├── crud.py                # CRUD utilities to interact with the database models
+│      ├── security.py            # Security-related functions, e.g., token verification
 │      └── api/                   # API specific modules (optional breakdown)
 │       ├── __init__.py
-│       ├── users.py           # User related routes
-│       ├── meals.py           # Meal related routes
-│       └── auth.py            # Authentication related routes
+│       ├── users.py              # User related routes
+│       ├── meals.py              # Meal related routes
+│       └── auth.py               # Authentication related routes
 │
-├── frontend/                  # Frontend part using Streamlit
+├── frontend/                     # Frontend part using Streamlit
 │   ├── __init__.py
-│   └── streamlit_app.py       # Streamlit frontend application
+│   └── streamlit_app.py          # Streamlit frontend application
 │
-├── tests/                     # Test modules
+├── tests/                        # Test modules
 │   ├── __init__.py
-│   ├── test_main.py           # Tests for main application logic
-│   ├── test_database.py       # Database related tests
-│   └── test_api.py            # Tests for API endpoints
+│   ├── test_main.py              # Tests for main application logic
+│   ├── test_database.py          # Database related tests
+│   └── test_api.py               # Tests for API endpoints
 │
-├── poetry.lock                # Poetry lock file to ensure reproducible installs
-├── pyproject.toml             # Poetry configuration file with dependencies and package info
-├── README.md                  # Project overview and setup instructions
-└── .gitignore                 # Specifies intentionally untracked files to ignore
+├── poetry.lock                   # Poetry lock file to ensure reproducible installs
+├── pyproject.toml                # Poetry configuration file with dependencies and package info
+├── README.md                     # Project overview and setup instructions
+└── .gitignore                    # Specifies intentionally untracked files to ignore
 ```
