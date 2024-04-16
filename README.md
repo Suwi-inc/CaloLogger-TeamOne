@@ -42,3 +42,40 @@
 - **Integrity:** In addition to meeting minimum Bandit requirements, the codebase should have zero high and medium-level vulnerabilities on Snyk.
 - **Accountability:** User actions (creations/deletions) should be logged, and logs should be kept for at least a day before they are rotated to ensure actions can be traced uniquely back to users.
 - **Data Protection:** All confidential personal data (passwords) should be stored in an encrypted state.
+
+
+# File structure
+
+```
+calorie-tracker/
+│
+├── backend/
+|   └──app/                       # Main application package
+│      ├── __init__.py            # Initializes the Python package
+│      ├── main.py                # Entry point to the FastAPI app, includes route definitions
+│      ├── dependencies.py        # Dependency provider functions, e.g., get_db
+│      ├── database.py            # Database configuration, session management
+│      ├── models.py              # Database models
+│      ├── schemas.py             # Pydantic schemas for request and response models
+│      ├── crud.py                # CRUD utilities to interact with the database models
+│      └── api/                   # API specific modules (optional breakdown)
+│       ├── __init__.py
+│       ├── users.py           # User related routes
+│       ├── meals.py           # Meal related routes
+│       └── auth.py            # Authentication related routes
+│
+├── frontend/                  # Frontend part using Streamlit
+│   ├── __init__.py
+│   └── streamlit_app.py       # Streamlit frontend application
+│
+├── tests/                     # Test modules
+│   ├── __init__.py
+│   ├── test_main.py           # Tests for main application logic
+│   ├── test_database.py       # Database related tests
+│   └── test_api.py            # Tests for API endpoints
+│
+├── poetry.lock                # Poetry lock file to ensure reproducible installs
+├── pyproject.toml             # Poetry configuration file with dependencies and package info
+├── README.md                  # Project overview and setup instructions
+└── .gitignore                 # Specifies intentionally untracked files to ignore
+```
