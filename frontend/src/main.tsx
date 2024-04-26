@@ -2,20 +2,29 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
 import ProtectedRoute from "./components/protected";
 import Login from "./pages/login";
-import Meals from "./pages/meals";
 import Loading from "./components/loading";
 import "./index.css";
+import MealTracking from "./pages/meal-tracking";
+import WeightTracking from "./pages/weight-tracking";
 
 const App = () => (
   <Suspense fallback={<Loading />}>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/meals/" />} />
+        <Route path="/" element={<Navigate to="/meal-tracking/" />} />
         <Route
-          path="/meals/"
+          path="/meal-tracking/"
           element={
             <ProtectedRoute>
-              <Meals />
+              <MealTracking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/weight-tracking/"
+          element={
+            <ProtectedRoute>
+              <WeightTracking />
             </ProtectedRoute>
           }
         />
