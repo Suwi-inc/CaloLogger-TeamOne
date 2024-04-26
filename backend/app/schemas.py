@@ -4,6 +4,12 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+class HealthCheck(BaseModel):
+    """Response model to validate and return when performing a health check."""
+
+    status: str = "OK"
+
+
 # Token and Authentication Schemas
 class Token(BaseModel):
     access_token: str

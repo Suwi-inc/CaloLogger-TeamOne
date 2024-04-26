@@ -42,4 +42,5 @@ const Header = () => {
   );
 };
 
+export { NavItem, NavList };
 export default Header;

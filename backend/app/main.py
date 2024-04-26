@@ -34,6 +34,23 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+@app.get(
+    "/health",
+    tags=["healthcheck"],
+    summary="Perform a Health Check",
+    response_description="Return HTTP Status Code 200 (OK)",
+    status_code=status.HTTP_200_OK,
+    response_model=schemas.HealthCheck,
+)
+def get_health() -> schemas.HealthCheck:
+    """
+    ## Perform a Health Check
+    Returns:
+        HealthCheck: Returns a JSON response with the health status
+    """
+    return schemas.HealthCheck(status="OK")
+
+
 @app.post("/signup", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_username(db, username=user.username)
