@@ -1,9 +1,8 @@
-from datetime import datetime, UTC
-
-from sqlalchemy import Column, Float, ForeignKey, Integer, String, DateTime
-from sqlalchemy.orm import relationship
+from datetime import UTC, datetime
 
 from app.database import Base
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class User(Base):

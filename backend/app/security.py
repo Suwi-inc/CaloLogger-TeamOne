@@ -1,8 +1,7 @@
-from fastapi import HTTPException, Request
-from fastapi.security.utils import get_authorization_scheme_param
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
 from app.crud import verify_access_token
+from fastapi import HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security.utils import get_authorization_scheme_param
 
 
 class JWTBearer(HTTPBearer):
