@@ -1,5 +1,4 @@
 import { Bar } from "react-chartjs-2";
-import { MOCK_MEALS_RESPONSE } from "../pages/meal-tracking";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -9,6 +8,7 @@ import {
   Tooltip,
   CategoryScale,
 } from "chart.js";
+import { MOCK_MEALS_RESPONSE } from "../constants";
 
 ChartJS.register(
   CategoryScale,
@@ -26,7 +26,7 @@ const MealChart = () => {
     if (!acc[date]) {
       acc[date] = 0;
     }
-    acc[date] += meal.total_calories;
+    acc[date] += meal.nutritions.calories;
     return acc;
   }, {} as { [key: string]: number });
 
