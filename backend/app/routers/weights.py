@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app import schemas
-from app.crud import get_user_weights, delete_user_weight
+from app.crud import get_user_weights, create_user_weight, delete_user_weight
 from app.security import JWTBearer, get_user_id
 from app.utils.db import get_db
 
@@ -23,6 +23,20 @@ async def get_weights(
     user_id = get_user_id(request)
     weights = get_user_weights(db, user_id)
     return weights
+
+
+@router.post("/weights", response_model=schemas.Weights)
+async def create_weight(
+    request: Request,
+    weight: schemas.WeightsCreate,
+    db: Session = Depends(get_db),
+):
+    user_id = get_user_id(request)
+    return create_user_weight(
+        db,
+        weight,
+        user_id,
+    )
 
 
 @router.delete("/weights/{weight_id}", response_model=schemas.Weights)
