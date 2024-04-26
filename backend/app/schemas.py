@@ -4,6 +4,19 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+# Token and Authentication Schemas
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+    class Config:
+        from_attributes = True
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+
 # User Schemas
 class UserBase(BaseModel):
     username: str
@@ -22,16 +35,16 @@ class User(UserBase):
 
 # Meal Schemas
 class MealNutritions(BaseModel):
-    calories: float
-    fat_total_g: float
-    fat_saturated_g: float
-    protein_g: float
-    sodium_mg: float
-    potassium_mg: float
-    cholesterol_mg: float
-    carbohydrates_total_g: float
-    fiber_g: float
-    sugar_g: float
+    calories: float = 0
+    fat_total_g: float = 0
+    fat_saturated_g: float = 0
+    protein_g: float = 0
+    sodium_mg: float = 0
+    potassium_mg: float = 0
+    cholesterol_mg: float = 0
+    carbohydrates_total_g: float = 0
+    fiber_g: float = 0
+    sugar_g: float = 0
 
     class Config:
         from_attributes = True
@@ -54,16 +67,6 @@ class Meal(MealBase):
 
     class Config:
         from_attributes = True
-
-
-# Token and Authentication Schemas
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
 
 
 # Weights Schemas (if you decide to add weight tracking)
