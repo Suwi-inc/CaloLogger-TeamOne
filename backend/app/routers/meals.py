@@ -5,6 +5,7 @@ from app import schemas
 from app.crud import create_user_meal, get_user_meals, delete_user_meal
 from app.security import JWTBearer, get_user_id
 from app.utils.db import get_db
+from app.utils.ninja_calls import get_nutritions, get_recipes
 
 router = APIRouter(
     tags=["Meals"],
@@ -33,9 +34,7 @@ async def create_meal(
     """
     user_id = get_user_id(request)
     meal_data = create_user_meal(db, meal, user_id)
-    nutritions = (
-        schemas.MealNutritions()
-    )  # Assuming this needs to be populated or calculated somewhere
+    nutritions = get_nutritions(meal_data.ingredients)
     return schemas.Meal(**meal_data.__dict__, nutritions=nutritions)
 
 
@@ -52,3 +51,13 @@ async def delete_meal(
     if meal is None:
         raise HTTPException(status_code=404, detail="Meal not found")
     return meal
+
+
+@router.get("/meals/search", response_model=list[schemas.MealResponse])
+async def search_meals(
+    query: str,
+) -> list[schemas.Meal]:
+    """
+    Search for meals by name for the authenticated user.
+    """
+    return get_recipes(query)
