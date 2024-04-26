@@ -15,14 +15,17 @@ def get_recipes(
     query: str,
 ) -> list[MealResponse]:
     api_url = "https://api.calorieninjas.com/v1/recipe?query="
-    response = requests.get(api_url + query, headers={"X-Api-Key": API_KEY})
+    response = requests.get(
+        api_url + query,
+        headers={
+            "origin": "https://calorieninjas.com",
+        },
+    )
     if response.status_code != requests.codes.ok:
         logger.error(f"Error: {response.status_code} {response.text}")
         raise HTTPException(status_code=404, detail="No recipe found")
 
-    response_json = response.json()
-    recipe_list = response_json["items"]
-    return recipe_list
+    return response.json()
 
 
 def get_nutritions(
@@ -31,7 +34,12 @@ def get_nutritions(
 
     api_url = "https://api.calorieninjas.com/v1/nutrition?query="
 
-    response = requests.get(api_url + query, headers={"X-Api-Key": API_KEY})
+    response = requests.get(
+        api_url + query,
+        headers={
+            "origin": "https://calorieninjas.com",
+        },
+    )
 
     if response.status_code != requests.codes.ok:
         logger.error(f"Error: {response.status_code} {response.text}")
@@ -68,8 +76,3 @@ def get_nutritions(
         fiber_g=nutrition_totals[8],
         sugar_g=nutrition_totals[9],
     )
-
-
-if __name__ == "__main__":
-    print(get_nutritions("carbonara"))
-    print(get_recipes("carbonara"))
