@@ -7,8 +7,6 @@ import WeightTracking from "./weight-tracking";
 import Dashboard from "./dashboard";
 import Login from "../pages/login";
 import SignUp from "../pages/signup";
-import Meals from "../pages/meals";
-import Loading from "../components/loading";
 
 const App = () => (
   <Suspense fallback={<Loading />}>
