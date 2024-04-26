@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -15,16 +15,31 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    meals: List["Meal"] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Meal Schemas
-class MealBase(BaseModel):
-    description: str
+class MealNutritions(BaseModel):
     calories: float
+    fat_total_g: float
+    fat_saturated_g: float
+    protein_g: float
+    sodium_mg: float
+    potassium_mg: float
+    cholesterol_mg: float
+    carbohydrates_total_g: float
+    fiber_g: float
+    sugar_g: float
+
+    class Config:
+        from_attributes = True
+
+
+class MealBase(BaseModel):
+    name: str
+    ingredients: str
     date: datetime
 
 
@@ -35,9 +50,10 @@ class MealCreate(MealBase):
 class Meal(MealBase):
     id: int
     user_id: int
+    nutritions: MealNutritions
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Token and Authentication Schemas
@@ -50,23 +66,25 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 
-# Weight Schemas (if you decide to add weight tracking)
-class WeightBase(BaseModel):
+# Weights Schemas (if you decide to add weight tracking)
+class WeightsBase(BaseModel):
     weight: float
     date: datetime
 
 
-class WeightCreate(WeightBase):
+class WeightsCreate(WeightsBase):
     pass
 
 
-class Weight(WeightBase):
+class Weights(WeightsBase):
     id: int
     user_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
-# Include this to handle List type fields correctly
-User.update_forward_refs()
+# # Include this to handle List type fields correctly
+# User.model_rebuild()
+# Meal.model_rebuild()
+# Weights.model_rebuild()
