@@ -58,6 +58,25 @@ export const MOCK_MEALS_RESPONSE: Meal[] = [
       sugar_g: 5,
     },
   },
+  {
+    id: 4,
+    name: "Dinner",
+    ingredients: "Grilled salmon, rice, vegetables",
+    date: "2024-04-27T18:00:00+0000",
+    user_id: 1,
+    nutritions: {
+      calories: 700,
+      fat_total_g: 25,
+      fat_saturated_g: 10,
+      protein_g: 35,
+      sodium_mg: 700,
+      potassium_mg: 400,
+      cholesterol_mg: 180,
+      carbohydrates_total_g: 30,
+      fiber_g: 8,
+      sugar_g: 5,
+    },
+  },
 ];
 
 export const MOCK_WEIGHT_RESPONSE: Weight[] = [

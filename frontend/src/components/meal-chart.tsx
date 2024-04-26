@@ -21,6 +21,7 @@ ChartJS.register(
 
 const MealChart = () => {
   // Grouping meals by date and calculating total calories for each date
+
   const groupedData = MOCK_MEALS_RESPONSE.reduce((acc, meal) => {
     const date = new Date(meal.date).toLocaleDateString();
     if (!acc[date]) {
@@ -49,8 +50,8 @@ const MealChart = () => {
   };
 
   return (
-    <div>
-      <h2>Meal Calories Chart</h2>
+    <div className="flex flex-col gap-5">
+      <h2 className="text-2xl font-bold text-gray-800">Meal Calories Chart</h2>
       <Bar data={data} />
     </div>
   );
