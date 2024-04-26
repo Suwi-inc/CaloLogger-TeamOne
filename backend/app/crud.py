@@ -18,38 +18,81 @@ SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
 
 
 # User-related CRUD operations
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+def get_user(
+    db: Session,
+    user_id: int,
+):
+    return (
+        db.query(models.User)
+        .filter(
+            models.User.id == user_id,
+        )
+        .first()
+    )
 
 
-def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).offset(skip).limit(limit).all()
+def get_users(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+):
+    return (
+        db.query(
+            models.User,
+        )
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
-def get_user_by_username(db: Session, username: str):
-    return db.query(models.User).filter(models.User.username == username).first()
+def get_user_by_username(
+    db: Session,
+    username: str,
+):
+    return (
+        db.query(models.User)
+        .filter(
+            models.User.username == username,
+        )
+        .first()
+    )
 
 
-def create_user(db: Session, user: schemas.UserCreate):
+def create_user(
+    db: Session,
+    user: schemas.UserCreate,
+):
     hashed_password = pwd_context.hash(user.password)
     db_user = models.User(
         username=user.username,
         hashed_password=hashed_password,
     )
-    db.add(db_user)
+    db.add(
+        db_user,
+    )
     db.commit()
-    db.refresh(db_user)
+    db.refresh(
+        db_user,
+    )
     return db_user
 
 
-def authenticate_user(db: Session, username: str, password: str):
+def authenticate_user(
+    db: Session,
+    username: str,
+    password: str,
+):
     user = get_user_by_username(db, username)
     if user and pwd_context.verify(password, user.hashed_password):
         return user
     return None
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+def create_access_token(
+    data: dict,
+    expires_delta: Optional[timedelta] = None,
+):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(UTC) + expires_delta
@@ -60,7 +103,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
 
 
-def verify_access_token(token: str):
+def verify_access_token(
+    token: str,
+):
     print(token)
 
     try:
@@ -89,75 +134,123 @@ def verify_access_token(token: str):
 
 
 # Meal-related CRUD operations
-def get_meals(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Meal).offset(skip).limit(limit).all()
+def get_user_meals(
+    db: Session,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+):
+    return (
+        db.query(
+            models.Meal,
+        )
+        .filter(
+            models.Meal.user_id == user_id,
+        )
+        .offset(
+            skip,
+        )
+        .limit(
+            limit,
+        )
+        .all()
+    )
 
 
-def get_meal_by_id(db: Session, meal_id: int):
-    return db.query(models.Meal).filter(models.Meal.id == meal_id).first()
-
-
-def create_meal(db: Session, meal: schemas.MealCreate, user_id: int):
-    db_meal = models.Meal(**meal.model_dump(), user_id=user_id)
-    db.add(db_meal)
+def create_meal(
+    db: Session,
+    meal: schemas.MealCreate,
+    user_id: int,
+):
+    db_meal = models.Meal(
+        **meal.model_dump(),
+        user_id=user_id,
+    )
+    db.add(
+        db_meal,
+    )
     db.commit()
-    db.refresh(db_meal)
+    db.refresh(
+        db_meal,
+    )
     return db_meal
 
 
-def update_meal(db: Session, meal_id: int, meal: schemas.MealCreate):
-    db_meal = db.query(models.Meal).filter(models.Meal.id == meal_id).first()
-    if db_meal:
-        for var, value in vars(meal).items():
-            setattr(db_meal, var, value) if value else None
-        db.commit()
-        db.refresh(db_meal)
-    return db_meal
-
-
-def delete_meal(db: Session, meal_id: int):
-    db_meal = db.query(models.Meal).filter(models.Meal.id == meal_id).first()
+def delete_meal(
+    db: Session,
+    meal_id: int,
+):
+    db_meal = (
+        db.query(
+            models.Meal,
+        )
+        .filter(
+            models.Meal.id == meal_id,
+        )
+        .first()
+    )
     if db_meal:
         db.delete(db_meal)
         db.commit()
     return db_meal
 
 
-def get_weights(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+def get_user_weights(
+    db: Session,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+):
     return (
-        db.query(models.Weight)
-        .filter(models.Weight.user_id == user_id)
-        .offset(skip)
-        .limit(limit)
+        db.query(models.Weights)
+        .filter(
+            models.Weights.user_id == user_id,
+        )
+        .offset(
+            skip,
+        )
+        .limit(
+            limit,
+        )
         .all()
     )
 
 
-def get_weight_by_id(db: Session, weight_id: int):
-    return db.query(models.Weight).filter(models.Weight.id == weight_id).first()
-
-
-def create_weight(db: Session, weight: schemas.WeightCreate, user_id: int):
-    db_weight = models.Weight(**weight.dict(), user_id=user_id)
-    db.add(db_weight)
+def create_weight(
+    db: Session,
+    weight: schemas.WeightsCreate,
+    user_id: int,
+):
+    db_weight = models.Weights(
+        **weight.dict(),
+        user_id=user_id,
+    )
+    db.add(
+        db_weight,
+    )
     db.commit()
-    db.refresh(db_weight)
+    db.refresh(
+        db_weight,
+    )
     return db_weight
 
 
-def update_weight(db: Session, weight_id: int, weight: schemas.WeightCreate):
-    db_weight = db.query(models.Weight).filter(models.Weight.id == weight_id).first()
+def delete_weight(
+    db: Session,
+    weight_id: int,
+):
+    db_weight = (
+        db.query(
+            models.Weights,
+        )
+        .filter(
+            models.Weights.id == weight_id,
+        )
+        .first()
+    )
     if db_weight:
-        for var, value in vars(weight).items():
-            setattr(db_weight, var, value) if value else None
-        db.commit()
-        db.refresh(db_weight)
-    return db_weight
-
-
-def delete_weight(db: Session, weight_id: int):
-    db_weight = db.query(models.Weight).filter(models.Weight.id == weight_id).first()
-    if db_weight:
-        db.delete(db_weight)
+        db.delete(
+            db_weight,
+        )
         db.commit()
     return db_weight
