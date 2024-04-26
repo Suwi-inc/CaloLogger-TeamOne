@@ -49,8 +49,8 @@ const MealChart = () => {
   };
 
   return (
-    <div>
-      <h2>Meal Calories Chart</h2>
+    <div className="flex flex-col gap-5">
+      <h2 className="text-2xl font-bold text-gray-800">Meal Calories Chart</h2>
       <Bar data={data} />
     </div>
   );

@@ -43,8 +43,10 @@ const WeightChart = () => {
   };
 
   return (
-    <div>
-      <h2>Weight Tracking Chart</h2>
+    <div className="flex flex-col gap-5">
+      <h2 className="text-2xl font-bold text-gray-800">
+        Weight Tracking Chart
+      </h2>
       <Line data={data} />
     </div>
   );
