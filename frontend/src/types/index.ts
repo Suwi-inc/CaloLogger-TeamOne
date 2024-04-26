@@ -34,4 +34,16 @@ type CreateWeight = {
   date: string;
 };
 
-export type { Meal, MealNutritions, Weight, CreateMeal, CreateWeight };
+type SearchResult = {
+  name: string;
+  ingredients: string;
+};
+
+export type {
+  SearchResult,
+  Meal,
+  MealNutritions,
+  Weight,
+  CreateMeal,
+  CreateWeight,
+};
