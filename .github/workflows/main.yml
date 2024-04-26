@@ -1,0 +1,96 @@
+name: calologger
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  linting:
+    name: linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies
+        run: poetry install
+      - name: Run linter
+        run: poetry run flake8 .
+      - name: Run Cyclomatic Complexity test
+        run: poetry run flake8 --max-complexity=10 .
+      - name: Run test coverage
+        run: poetry run pytest --cov=app --cov-branch --cov-report term-missing --cov-fail-under=85 tests/
+
+  #   unit_tests:
+  #     name: Run Unit Tests
+  #     if: github.event_name == 'push' # Only run on push events
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - uses: actions/checkout@v4
+  #       - uses: actions/setup-python@v4
+  #         with:
+  #           python-version: "3.11"
+  #       - name: Run image
+  #         uses: abatilo/actions-poetry@v2
+  #         with:
+  #           poetry-version: "1.7.1"
+  #       - name: Install dependencies
+  #         run: poetry install
+  #       - name: Run unit tests
+  #         run: poetry run pytest tests/unit
+
+  #   e2e_tests:
+  #     name: Run End-to-End Tests
+  #     if: github.event_name == 'pull_request' # Only run on pull request events
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - uses: actions/checkout@v4
+  #       - uses: actions/setup-python@v4
+  #         with:
+  #           python-version: "3.11"
+  #       - name: Run image
+  #         uses: abatilo/actions-poetry@v2
+  #         with:
+  #           poetry-version: "1.7.1"
+  #       - name: Install dependencies
+  #         run: poetry install
+  #       - name: Run unit tests
+  #         run: poetry run pytest tests/e2e
+
+  security:
+    name: security
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.11.0]
+        poetry-version: [1.7.0]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Snyk
+        uses: snyk/actions/setup@master
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Run bandit
+        run: poetry run bandit .
+      - name: Run safety
+        run: poetry run safety check
+      - name: Snyk check
+        run: |
+          snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
