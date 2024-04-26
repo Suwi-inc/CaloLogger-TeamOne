@@ -1,5 +1,4 @@
 import { Line } from "react-chartjs-2";
-import { MOCK_WEIGHT_RESPONSE } from "../pages/weight-tracking";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -10,6 +9,7 @@ import {
   Tooltip,
   CategoryScale,
 } from "chart.js";
+import { MOCK_WEIGHT_RESPONSE } from "../constants";
 
 ChartJS.register(
   CategoryScale,
@@ -26,7 +26,7 @@ const WeightChart = () => {
   const dates = MOCK_WEIGHT_RESPONSE.map((entry) =>
     new Date(entry.date).toLocaleDateString()
   );
-  const weights = MOCK_WEIGHT_RESPONSE.map((entry) => entry.value);
+  const weights = MOCK_WEIGHT_RESPONSE.map((entry) => entry.weight);
 
   // Creating chart data
   const data = {

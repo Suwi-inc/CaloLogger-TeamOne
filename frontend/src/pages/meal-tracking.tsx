@@ -1,15 +1,9 @@
 import Container from "../components/container";
 import { getDateMedium, getTimeShort } from "../../utils/parse-time";
+import { MOCK_MEALS_RESPONSE } from "../constants";
+import { Meal } from "../types";
 
-interface MealEntry {
-  id: number;
-  name: string;
-  ingredients: string;
-  total_calories: number;
-  date: string;
-}
-
-const MealEntry = ({ meal_entry }: { meal_entry: MealEntry }) => {
+const MealEntry = ({ meal_entry }: { meal_entry: Meal }) => {
   return (
     <div className="flex flex-col p-5 border border-gray-200 rounded-md gap-5">
       <div className="flex flex-col gap-2">
@@ -29,40 +23,9 @@ const MealEntry = ({ meal_entry }: { meal_entry: MealEntry }) => {
 };
 
 const MealList = () => {
-  const meal_entries = [
-    {
-      id: 0,
-      name: "PIZZA",
-      ingredients: "1 dough 2 chicken 3 pineapple",
-      total_calories: 500,
-      date: "2024-04-26T18:37:47+0000",
-    },
-    {
-      id: 1,
-      name: "PASTA",
-      ingredients: "1 pasta 2 chicken 3 milk",
-      total_calories: 400,
-      date: "2024-04-26T18:37:47+0000",
-    },
-    {
-      id: 2,
-      name: "SHAWARMA",
-      ingredients: "1 khobz 2 chicken 3 toom",
-      total_calories: 600,
-      date: "2024-04-26T18:37:47+0000",
-    },
-    {
-      id: 3,
-      name: "SHAWARMA",
-      ingredients: "1 khobz 2 chicken 3 toom",
-      total_calories: 600,
-      date: "2024-04-27T18:37:47+0000",
-    },
-  ];
-
   return (
     <div className="flex flex-col gap-5">
-      {meal_entries.map((meal_entry) => (
+      {MOCK_MEALS_RESPONSE.map((meal_entry) => (
         <MealEntry key={meal_entry.id} meal_entry={meal_entry} />
       ))}
     </div>
