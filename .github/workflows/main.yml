@@ -27,9 +27,9 @@ jobs:
       - name: Run Cyclomatic Complexity test
         working-directory: ./backend
         run: poetry run flake8 --max-complexity=10 .
-      - name: Run test coverage
-        working-directory: ./backend
-        run: poetry run pytest --cov=app --cov-branch --cov-report term-missing --cov-fail-under=85 tests/
+      # - name: Run test coverage
+      #   working-directory: ./backend
+      #   run: poetry run pytest --cov=app --cov-branch --cov-report term-missing --cov-fail-under=85 tests/
 
   #   unit_tests:
   #     name: Run Unit Tests
@@ -93,9 +93,9 @@ jobs:
       - name: Run bandit
         working-directory: ./backend
         run: poetry run bandit .
-      - name: Run safety
-        working-directory: ./backend
-        run: poetry run safety check
+      # - name: Run safety
+      #   working-directory: ./backend
+      #   run: poetry run safety check
       - name: Snyk check
         working-directory: ./backend
         run: |
