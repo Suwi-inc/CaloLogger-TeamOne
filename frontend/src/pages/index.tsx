@@ -5,6 +5,10 @@ import MealTracking from "./meal-tracking";
 import ProtectedRoute from "../components/protected";
 import WeightTracking from "./weight-tracking";
 import Dashboard from "./dashboard";
+import Login from "../pages/login";
+import SignUp from "../pages/signup";
+import Meals from "../pages/meals";
+import Loading from "../components/loading";
 
 const App = () => (
   <Suspense fallback={<Loading />}>
@@ -14,9 +18,9 @@ const App = () => (
         <Route
           path="/dashboard"
           element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
               <Dashboard />
-            // </ProtectedRoute>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -35,7 +39,8 @@ const App = () => (
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<></>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="*" element={<p> Page Not found! </p>} />
       </Routes>
     </BrowserRouter>
