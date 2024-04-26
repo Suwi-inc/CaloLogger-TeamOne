@@ -50,6 +50,16 @@ class MealNutritions(BaseModel):
         from_attributes = True
 
 
+class MealResponse(BaseModel):
+    title: str
+    ingredients: str
+    servings: str
+    instructions: str
+
+    class Config:
+        from_attributes = True
+
+
 class MealBase(BaseModel):
     name: str
     ingredients: str
