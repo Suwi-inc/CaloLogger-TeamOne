@@ -1,7 +1,7 @@
 import requests
 from fastapi import HTTPException
 from typing import List, Dict
-from app.schemas import MealNutritions, MealResponse
+from app.schemas import MealNutritions, Recipe
 from loguru import logger
 
 API_BASE_URL = "https://api.calorieninjas.com/v1/"
@@ -19,7 +19,7 @@ def fetch_api_data(endpoint: str, query: str) -> Dict:
     return response.json()
 
 
-def get_recipes(query: str) -> List[MealResponse]:
+def get_recipes(query: str) -> List[Recipe]:
     """Fetch recipes based on a query."""
     data = fetch_api_data("recipe", query)
     return data

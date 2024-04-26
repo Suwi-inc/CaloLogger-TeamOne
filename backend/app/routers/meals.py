@@ -53,10 +53,10 @@ async def delete_meal(
     return meal
 
 
-@router.get("/meals/search", response_model=list[schemas.MealResponse])
+@router.get("/meals/search", response_model=list[schemas.Recipe])
 async def search_meals(
     query: str,
-) -> list[schemas.Meal]:
+) -> list[schemas.Recipe]:
     """
     Search for meals by name for the authenticated user.
     """
