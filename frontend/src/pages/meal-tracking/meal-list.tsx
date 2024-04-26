@@ -1,7 +1,6 @@
-import Container from "../components/container";
-import { getDateMedium, getTimeShort } from "../../utils/parse-time";
-import { MOCK_MEALS_RESPONSE } from "../constants";
-import { Meal } from "../types";
+import { getDateMedium, getTimeShort } from "../../../utils/parse-time";
+import { MOCK_MEALS_RESPONSE } from "../../constants";
+import { Meal } from "../../types";
 import { useState } from "react";
 
 const MealEntry = ({ meal_entry }: { meal_entry: Meal }) => {
@@ -77,17 +76,4 @@ const MealList = () => {
   );
 };
 
-const MealTracking = () => {
-  return (
-    <Container>
-      <div className="flex-col py-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="flex flex-col gap-5">
-          <h1 className="text-2xl font-bold">Meals</h1>
-          <MealList />
-        </div>
-      </div>
-    </Container>
-  );
-};
-
-export default MealTracking;
+export default MealList;
