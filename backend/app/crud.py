@@ -128,11 +128,27 @@ def create_user_weight(
     db: Session, weight: schemas.WeightsCreate, user_id: int
 ) -> models.Weights:
     """Create a weight record for a user."""
-    db_weight = models.Weights(**weight.dict(), user_id=user_id)
+    db_weight = models.Weights(**weight.model_dump(), user_id=user_id)
     db.add(db_weight)
     db.commit()
     db.refresh(db_weight)
     return db_weight
+
+
+def get_user_weights(
+    db: Session,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+) -> List[models.Weights]:
+    """Retrieve weights of a specific user."""
+    return (
+        db.query(models.Weights)
+        .filter(models.Weights.user_id == user_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def delete_user_weight(
