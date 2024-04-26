@@ -1,5 +1,4 @@
 import { Bar } from "react-chartjs-2";
-import { MOCK_MEALS_RESPONSE } from "../pages/meal-tracking";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -9,6 +8,7 @@ import {
   Tooltip,
   CategoryScale,
 } from "chart.js";
+import { MOCK_MEALS_RESPONSE } from "../constants";
 
 ChartJS.register(
   CategoryScale,
@@ -21,12 +21,13 @@ ChartJS.register(
 
 const MealChart = () => {
   // Grouping meals by date and calculating total calories for each date
+
   const groupedData = MOCK_MEALS_RESPONSE.reduce((acc, meal) => {
     const date = new Date(meal.date).toLocaleDateString();
     if (!acc[date]) {
       acc[date] = 0;
     }
-    acc[date] += meal.total_calories;
+    acc[date] += meal.nutritions.calories;
     return acc;
   }, {} as { [key: string]: number });
 
@@ -49,8 +50,8 @@ const MealChart = () => {
   };
 
   return (
-    <div>
-      <h2>Meal Calories Chart</h2>
+    <div className="flex flex-col gap-5">
+      <h2 className="text-2xl font-bold text-gray-800">Meal Calories Chart</h2>
       <Bar data={data} />
     </div>
   );

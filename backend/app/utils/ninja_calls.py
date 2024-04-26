@@ -1,53 +1,36 @@
 import requests
-import os
 from fastapi import HTTPException
+from typing import List, Dict
 from app.schemas import MealNutritions, MealResponse
 from loguru import logger
-from dotenv import load_dotenv
+
+API_BASE_URL = "https://api.calorieninjas.com/v1/"
+HEADERS = {"origin": "https://calorieninjas.com"}
 
 
-load_dotenv()
-
-API_KEY = os.getenv("API_KEY", "default_api_key")
-
-
-def get_recipes(
-    query: str,
-) -> list[MealResponse]:
-    api_url = "https://api.calorieninjas.com/v1/recipe?query="
+def fetch_api_data(endpoint: str, query: str) -> Dict:
+    """Helper function to fetch data from API and handle errors."""
     response = requests.get(
-        api_url + query,
-        headers={
-            "origin": "https://calorieninjas.com",
-        },
+        f"{API_BASE_URL}{endpoint}?query={query}", headers=HEADERS, timeout=10
     )
     if response.status_code != requests.codes.ok:
         logger.error(f"Error: {response.status_code} {response.text}")
-        raise HTTPException(status_code=404, detail="No recipe found")
-
+        raise HTTPException(status_code=404, detail="Resource not found")
     return response.json()
 
 
-def get_nutritions(
-    query: str,
-) -> MealNutritions:
+def get_recipes(query: str) -> List[MealResponse]:
+    """Fetch recipes based on a query."""
+    data = fetch_api_data("recipe", query)
+    return data
 
-    api_url = "https://api.calorieninjas.com/v1/nutrition?query="
 
-    response = requests.get(
-        api_url + query,
-        headers={
-            "origin": "https://calorieninjas.com",
-        },
-    )
+def get_nutritions(query: str) -> MealNutritions:
+    """Fetch nutritional information based on a query and compute totals."""
+    data = fetch_api_data("nutrition", query)
+    nutrition_list = data["items"]
 
-    if response.status_code != requests.codes.ok:
-        logger.error(f"Error: {response.status_code} {response.text}")
-        raise HTTPException(status_code=404, detail="No nutrition found")
-
-    response_json = response.json()
-    nutrition_list = response_json["items"]
-
+    # Calculate total nutritional values
     nutrition_totals = [
         sum(item[nutr] for item in nutrition_list)
         for nutr in [

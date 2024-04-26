@@ -14,25 +14,28 @@ router = APIRouter(
 
 @router.get("/weights", response_model=list[schemas.Weights])
 async def get_weights(
-    request: Request,
-    db: Session = Depends(get_db),
-):
+    request: Request, db: Session = Depends(get_db)
+) -> list[schemas.Weights]:
+    """
+    Retrieve all weight entries for the authenticated user.
+    Returns a list of weight entries.
+    """
     user_id = get_user_id(request)
-    return get_user_weights(db, user_id)
+    weights = get_user_weights(db, user_id)
+    return weights
 
 
 @router.delete("/weights/{weight_id}", response_model=schemas.Weights)
 async def delete_weight(
-    request: Request,
-    weight_id: int,
-    db: Session = Depends(get_db),
-):
+    request: Request, weight_id: int, db: Session = Depends(get_db)
+) -> schemas.Weights:
+    """
+    Delete a weight entry by its ID for the authenticated user.
+    Raises a 404 error if the weight is not found.
+    Returns the deleted weight entry.
+    """
     user_id = get_user_id(request)
     weight = delete_user_weight(db, user_id, weight_id)
-
     if weight is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Weight not found",
-        )
+        raise HTTPException(status_code=404, detail="Weight not found")
     return weight
