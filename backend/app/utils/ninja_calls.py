@@ -20,6 +20,7 @@ def get_recipes(
         headers={
             "origin": "https://calorieninjas.com",
         },
+        timeout=10,
     )
     if response.status_code != requests.codes.ok:
         logger.error(f"Error: {response.status_code} {response.text}")
@@ -39,6 +40,7 @@ def get_nutritions(
         headers={
             "origin": "https://calorieninjas.com",
         },
+        timeout=10,
     )
 
     if response.status_code != requests.codes.ok:
