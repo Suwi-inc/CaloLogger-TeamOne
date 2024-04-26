@@ -1,5 +1,4 @@
 import { Bar } from "react-chartjs-2";
-import { MOCK_MEALS_RESPONSE } from "../pages/meal-tracking";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -21,7 +20,38 @@ ChartJS.register(
 
 const MealChart = () => {
   // Grouping meals by date and calculating total calories for each date
-  const groupedData = MOCK_MEALS_RESPONSE.reduce((acc, meal) => {
+  const meal_entries = [
+    {
+      id: 0,
+      name: "PIZZA",
+      ingredients: "1 dough 2 chicken 3 pineapple",
+      total_calories: 500,
+      date: "2024-04-26T18:37:47+0000",
+    },
+    {
+      id: 1,
+      name: "PASTA",
+      ingredients: "1 pasta 2 chicken 3 milk",
+      total_calories: 400,
+      date: "2024-04-26T18:37:47+0000",
+    },
+    {
+      id: 2,
+      name: "SHAWARMA",
+      ingredients: "1 khobz 2 chicken 3 toom",
+      total_calories: 600,
+      date: "2024-04-26T18:37:47+0000",
+    },
+    {
+      id: 3,
+      name: "SHAWARMA",
+      ingredients: "1 khobz 2 chicken 3 toom",
+      total_calories: 600,
+      date: "2024-04-27T18:37:47+0000",
+    },
+  ];
+
+  const groupedData = meal_entries.reduce((acc, meal) => {
     const date = new Date(meal.date).toLocaleDateString();
     if (!acc[date]) {
       acc[date] = 0;
