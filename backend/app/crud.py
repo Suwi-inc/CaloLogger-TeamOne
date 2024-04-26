@@ -106,7 +106,6 @@ def create_access_token(
 def verify_access_token(
     token: str,
 ):
-    print(token)
 
     try:
         decoded_jwt = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
@@ -116,7 +115,6 @@ def verify_access_token(
             status_code=401,
             detail="Invalid token",
         )
-    print(f"Decoded JWT: {decoded_jwt}")
     if decoded_jwt:
         # check if expired
         if decoded_jwt.get("exp") < datetime.now(UTC).timestamp():
@@ -157,7 +155,7 @@ def get_user_meals(
     )
 
 
-def create_meal(
+def create_user_meal(
     db: Session,
     meal: schemas.MealCreate,
     user_id: int,
@@ -176,8 +174,9 @@ def create_meal(
     return db_meal
 
 
-def delete_meal(
+def delete_user_meal(
     db: Session,
+    user_id: int,
     meal_id: int,
 ):
     db_meal = (
@@ -190,9 +189,11 @@ def delete_meal(
         .first()
     )
     if db_meal:
-        db.delete(db_meal)
-        db.commit()
-    return db_meal
+        if db_meal.user_id == user_id:
+            db.delete(db_meal)
+            db.commit()
+            return db_meal
+    return None
 
 
 def get_user_weights(
@@ -216,7 +217,7 @@ def get_user_weights(
     )
 
 
-def create_weight(
+def create_user_weight(
     db: Session,
     weight: schemas.WeightsCreate,
     user_id: int,
@@ -235,8 +236,9 @@ def create_weight(
     return db_weight
 
 
-def delete_weight(
+def delete_user_weight(
     db: Session,
+    user_id: int,
     weight_id: int,
 ):
     db_weight = (
@@ -249,8 +251,10 @@ def delete_weight(
         .first()
     )
     if db_weight:
-        db.delete(
-            db_weight,
-        )
-        db.commit()
-    return db_weight
+        if db_weight.user_id == user_id:
+            db.delete(
+                db_weight,
+            )
+            db.commit()
+            return db_weight
+    return None

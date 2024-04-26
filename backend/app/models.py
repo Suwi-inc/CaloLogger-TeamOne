@@ -1,8 +1,9 @@
 from datetime import UTC, datetime
 
-from app.database import Base
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+
+from app.database import Base
 
 
 class User(Base):
@@ -12,18 +13,20 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
 
-    meals = relationship("Meal", back_populates="owner")
+    meals = relationship("Meal")
 
 
 class Meal(Base):
     __tablename__ = "meals"
 
     id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
     ingredients = Column(String, index=True)
     date = Column(DateTime, default=datetime.now(UTC))
 
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="meals")
+    user = relationship("User")
+    nutritions = relationship("Nutritions")
 
 
 class Nutritions(Base):
@@ -43,7 +46,7 @@ class Nutritions(Base):
     sugar_g = Column(Float)
 
     meal_id = Column(Integer, ForeignKey("meals.id"))
-    meal = relationship("Meal", back_populates="nutritions")
+    meal = relationship("Meal")
 
 
 class Weights(Base):
@@ -54,4 +57,4 @@ class Weights(Base):
     date = Column(DateTime, default=datetime.now(UTC))
 
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="weights")
+    user = relationship("User")

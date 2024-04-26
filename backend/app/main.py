@@ -1,13 +1,13 @@
-from typing import List
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
 import app.crud as crud
 import app.models as models
 import app.schemas as schemas
-from app.database import SessionLocal, engine
-from app.security import JWTBearer, get_user_id
-from fastapi import Depends, FastAPI, HTTPException, Request, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+from app.database import engine
+from app.utils.db import get_db
+from app.routers import meals, weights
 
 models.Base.metadata.create_all(bind=engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -15,20 +15,22 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 app = FastAPI()
 
 
-# Dependency for database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@app.post("/token", response_model=schemas.Token)
-def login_for_access_token(
+@app.post("/signup", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_username(db, username=user.username)
+    if db_user:
+        raise HTTPException(
+            status_code=400,
+            detail="Username already registered",
+        )
+    return crud.create_user(db=db, user=user)
+
+
+@app.post("/login", response_model=schemas.Token)
+def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
@@ -45,41 +47,11 @@ def login_for_access_token(
             "username": user.username,
         }
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
 
 
-@app.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_username(db, username=user.username)
-    if db_user:
-        raise HTTPException(
-            status_code=400,
-            detail="Username already registered",
-        )
-    return crud.create_user(db=db, user=user)
-
-
-@app.get("/users/", response_model=List[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    return users
-
-
-@app.get("/meals/", response_model=List[schemas.Meal])
-def read_meals(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    meals = crud.get_meals(db, skip=skip, limit=limit)
-    return meals
-
-
-@app.post(
-    "/meals/",
-    response_model=schemas.Meal,
-    dependencies=[Depends(JWTBearer())],
-)
-def create_meal(
-    meal: schemas.MealCreate,
-    request: Request,
-    db: Session = Depends(get_db),
-):
-    user_id = get_user_id(request)
-    return crud.create_meal(db, meal, user_id)
+app.include_router(meals.router)
+app.include_router(weights.router)
