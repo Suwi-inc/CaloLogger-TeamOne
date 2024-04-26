@@ -238,6 +238,7 @@ def create_user_weight(
 
 def delete_user_weight(
     db: Session,
+    user_id: int,
     weight_id: int,
 ):
     db_weight = (
@@ -250,8 +251,10 @@ def delete_user_weight(
         .first()
     )
     if db_weight:
-        db.delete(
-            db_weight,
-        )
-        db.commit()
-    return db_weight
+        if db_weight.user_id == user_id:
+            db.delete(
+                db_weight,
+            )
+            db.commit()
+            return db_weight
+    return None

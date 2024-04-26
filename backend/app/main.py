@@ -7,7 +7,7 @@ import app.models as models
 import app.schemas as schemas
 from app.database import engine
 from app.utils.db import get_db
-from app.routers import meals
+from app.routers import meals, weights
 
 models.Base.metadata.create_all(bind=engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -54,3 +54,4 @@ def login(
 
 
 app.include_router(meals.router)
+app.include_router(weights.router)
