@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
 import ProtectedRoute from "../components/protected";
 import Login from "../pages/login";
+import SignUp from "../pages/signup";
 import Meals from "../pages/meals";
 import Loading from "../components/loading";
 
@@ -19,6 +20,7 @@ const App = () => (
           }
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="*" element={<p> Page Not found! </p>} />
       </Routes>
     </BrowserRouter>
