@@ -39,7 +39,7 @@ const SaveMealModel = ({
       return;
     }
 
-    const datetime = `${date}T${time}:00`;
+    const datetime = `${date}T${time}:00.000Z`;
     console.log(datetime, ingredients);
   };
 
