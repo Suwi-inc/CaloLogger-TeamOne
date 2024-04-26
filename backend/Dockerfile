@@ -30,8 +30,6 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 COPY app /code/app
 COPY run.py /code
 
-EXPOSE 5000
-
 # Set the command to run the application
 CMD ["python", "run.py"]
 
