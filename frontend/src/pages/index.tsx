@@ -7,12 +7,12 @@ import WeightTracking from "./weight-tracking";
 import Dashboard from "./dashboard";
 import Login from "../pages/login";
 import SignUp from "../pages/signup";
-import Meals from "../pages/meals";
-import Loading from "../components/loading";
+import Header from "../components/header";
 
 const App = () => (
   <Suspense fallback={<Loading />}>
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard/" />} />
         <Route

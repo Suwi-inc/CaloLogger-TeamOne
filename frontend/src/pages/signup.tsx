@@ -13,7 +13,7 @@ const SignUp = () => {
   const token = useLogin();
 
   if (token) {
-    return <Navigate to="/meals/" />;
+    return <Navigate to="/" />;
   }
 
   const validateForm = (data: FormData) => {
