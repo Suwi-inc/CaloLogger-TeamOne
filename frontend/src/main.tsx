@@ -4,7 +4,7 @@ import ProtectedRoute from "./components/protected";
 import Login from "./pages/login";
 import Meals from "./pages/meals";
 import Loading from "./components/loading";
-import "./App.css";
+import "./index.css";
 
 const App = () => (
   <Suspense fallback={<Loading />}>
