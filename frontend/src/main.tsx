@@ -1,29 +1,12 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { Suspense } from "react";
-import ProtectedRoute from "./components/protected";
-import Login from "./pages/login";
-import Meals from "./pages/meals";
-import Loading from "./components/loading";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./pages";
 import "./index.css";
 
-const App = () => (
-  <Suspense fallback={<Loading />}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/meals/" />} />
-        <Route
-          path="/meals/"
-          element={
-            <ProtectedRoute>
-              <Meals />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<p> Page Not found! </p>} />
-      </Routes>
-    </BrowserRouter>
-  </Suspense>
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
 
 export default App;
