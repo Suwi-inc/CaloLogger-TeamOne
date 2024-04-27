@@ -1,5 +1,5 @@
 import { getTimeISO } from "../../utils/parse-time";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { addWeight } from "../../api/weight";
 import { BACKEND_URL } from "../../constants";
 import useSWRMutation from "swr/mutation";
