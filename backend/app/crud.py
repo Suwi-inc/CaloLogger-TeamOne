@@ -34,7 +34,11 @@ def create_access_token(
     # Set token expiration time either to specified
     #   duration or default to 60 minutes
     expire = datetime.now(UTC) + (
-        expires_delta if expires_delta else timedelta(minutes=60)
+        expires_delta
+        if expires_delta
+        else timedelta(
+            days=7,
+        )
     )
     # Append expiration date to payload
     to_encode.update({"exp": expire})
