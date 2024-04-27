@@ -8,7 +8,10 @@ import {
   Tooltip,
   CategoryScale,
 } from "chart.js";
-import { MOCK_MEALS_RESPONSE } from "../constants";
+import { BACKEND_URL } from "../../constants";
+import { getMeals } from "../../api/meals";
+import { Meal } from "../../types";
+import useSWR from "swr";
 
 ChartJS.register(
   CategoryScale,
@@ -20,9 +23,17 @@ ChartJS.register(
 );
 
 const MealChart = () => {
-  // Grouping meals by date and calculating total calories for each date
+  const {
+    data: meals,
+    error,
+    isLoading,
+  } = useSWR<Meal[]>(`${BACKEND_URL}/meals`, getMeals);
 
-  const groupedData = MOCK_MEALS_RESPONSE.reduce((acc, meal) => {
+  if (isLoading) return <p>Loading...</p>;
+  if (error || !meals) return <p>Error: {error.message}</p>;
+
+  // Grouping meals by date and calculating total calories for each date
+  const groupedData = meals.reduce((acc, meal) => {
     const date = new Date(meal.date).toLocaleDateString();
     if (!acc[date]) {
       acc[date] = 0;

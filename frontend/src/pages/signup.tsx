@@ -1,16 +1,21 @@
 import useLogin from "../hooks/useLogin";
 import { Navigate } from "react-router-dom";
 import { signUp as signUpRequest } from "../api/auth";
+import { BACKEND_URL } from "../constants";
+import useSWRMutation from "swr/mutation";
 
 type FormData = {
-  fullname: string;
-  email: string;
+  username: string;
   password: string;
   confirmPassword: string;
 };
 
 const SignUp = () => {
   const token = useLogin();
+  const { trigger, isMutating } = useSWRMutation(
+    `${BACKEND_URL}/signup`,
+    signUpRequest
+  );
 
   if (token) {
     return <Navigate to="/" />;
@@ -21,11 +26,11 @@ const SignUp = () => {
       throw new Error("Passwords do not match");
     }
 
-    if (data.password.length < 8) {
-      throw new Error("Password must be at least 8 characters long");
+    if (data.password.length < 4) {
+      throw new Error("Password must be at least 4 characters long");
     }
 
-    if (data.fullname.length < 3) {
+    if (data.username.length < 3) {
       throw new Error("Full name must be at least 3 characters long");
     }
 
@@ -36,10 +41,12 @@ const SignUp = () => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries()) as FormData;
+    const { username, password, confirmPassword } = Object.fromEntries(
+      formData.entries()
+    ) as FormData;
 
     try {
-      validateForm(data);
+      validateForm({ username, password, confirmPassword });
     } catch (error) {
       const errorMessage = (error as Error).message;
       alert(errorMessage);
@@ -47,8 +54,8 @@ const SignUp = () => {
     }
 
     try {
-      await signUpRequest(data.email, data.password, data.fullname);
-      window.location.reload();
+      await trigger({ username, password });
+      window.location.href = "/login";
     } catch (error) {
       const errorMessage = (error as Error).message;
       alert(errorMessage);
@@ -62,29 +69,16 @@ const SignUp = () => {
         <p className="mb-4">Enter your details to create an account.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="fullname" className="font-semibold">
-              Full Name
+            <label htmlFor="username" className="font-semibold">
+              Username
             </label>
             <input
               type="text"
-              id="fullname"
-              name="fullname"
+              id="username"
+              name="username"
               required
               className="w-full border border-gray-300 rounded-md py-2 px-3 text-md mt-1"
               placeholder="Enter your full name"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="font-semibold">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              className="w-full border border-gray-300 rounded-md py-2 px-3 text-md mt-1"
-              placeholder="name@company.com"
             />
           </div>
           <div>
@@ -115,9 +109,10 @@ const SignUp = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white rounded-md py-2 mt-4"
+            className="w-full bg-blue-500 text-white rounded-md py-2 mt-4 disabled:opacity-50"
+            disabled={isMutating}
           >
-            Sign Up
+            {isMutating ? "Signing up..." : "Sign up"}
           </button>
           <p className="text-center text-sm mt-4">
             Already have an account?{" "}
