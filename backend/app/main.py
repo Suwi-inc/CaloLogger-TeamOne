@@ -1,5 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from loguru import logger
@@ -31,21 +31,21 @@ app.add_middleware(
 )
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-
 @app.head("/health")
 def head_health() -> schemas.HealthCheck:
     """
     ## Perform a Health Check
-    Returns:
-        HealthCheck: Returns a JSON response with the health status
+    Returns a JSON response with the health status. Used by Uptime Robot
     """
     return schemas.HealthCheck(status="OK")
 
 
 @app.post("/signup", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    """
+    ## Create a new user
+    Creates a new user and returns it.
+    """
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
         raise HTTPException(
@@ -60,6 +60,10 @@ def login(
     user: schemas.UserCreate,
     db: Session = Depends(get_db),
 ):
+    """
+    ## Login a user
+    Logs in a user and returns a token.
+    """
     user_auth = crud.authenticate_user(db, user.username, user.password)
     if not user_auth:
         raise HTTPException(

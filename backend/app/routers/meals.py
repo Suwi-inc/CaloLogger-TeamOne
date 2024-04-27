@@ -13,11 +13,15 @@ router = APIRouter(
 )
 
 
-@router.get("/meals", response_model=list[schemas.Meal])
+@router.get(
+    "/meals",
+    response_model=list[schemas.Meal],
+)
 async def get_meals(
     request: Request, db: Session = Depends(get_db)
 ) -> list[schemas.Meal]:
     """
+    ## Get all meals
     Retrieve all meals for the authenticated user.
     """
     user_id = get_user_id(request)
@@ -25,11 +29,15 @@ async def get_meals(
     return meals
 
 
-@router.post("/meals", response_model=schemas.Meal)
+@router.post(
+    "/meals",
+    response_model=schemas.Meal,
+)
 async def create_meal(
     request: Request, meal: schemas.MealCreate, db: Session = Depends(get_db)
 ) -> schemas.Meal:
     """
+    ## Create a new meal
     Create a new meal for the authenticated user.
     """
     user_id = get_user_id(request)
@@ -38,13 +46,16 @@ async def create_meal(
     return schemas.Meal(**meal_data.__dict__, nutritions=nutritions)
 
 
-@router.delete("/meals/{meal_id}", response_model=schemas.Meal)
+@router.delete(
+    "/meals/{meal_id}",
+    response_model=schemas.Meal,
+)
 async def delete_meal(
     request: Request, meal_id: int, db: Session = Depends(get_db)
 ) -> schemas.Meal:
     """
+    ## Delete a meal
     Delete a meal by its ID for the authenticated user.
-    Raises a 404 error if the meal is not found.
     """
     user_id = get_user_id(request)
     meal = delete_user_meal(db, user_id, meal_id)
@@ -53,11 +64,15 @@ async def delete_meal(
     return meal
 
 
-@router.get("/meals/search", response_model=list[schemas.Recipe])
+@router.get(
+    "/meals/search",
+    response_model=list[schemas.Recipe],
+)
 async def search_meals(
     query: str,
 ) -> list[schemas.Recipe]:
     """
+    ## Search for meals
     Search for meals by name for the authenticated user.
     """
     return get_recipes(query)
