@@ -170,6 +170,10 @@ const MealForm = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const query = formData.get("query") as string;
+    if (!query || !query.trim()) {
+      alert("Please enter a meal name");
+      return;
+    }
     const data = await trigger({ query });
     setSearchResults(data);
   };

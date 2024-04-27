@@ -9,7 +9,10 @@ import {
   Tooltip,
   CategoryScale,
 } from "chart.js";
-import { MOCK_WEIGHT_RESPONSE } from "../constants";
+import { BACKEND_URL } from "../../constants";
+import { Weight } from "../../types";
+import { getWeights } from "../../api/weight";
+import useSWR from "swr";
 
 ChartJS.register(
   CategoryScale,
@@ -23,18 +26,32 @@ ChartJS.register(
 
 const WeightChart = () => {
   // Extracting dates and weight values from the provided data
-  const dates = MOCK_WEIGHT_RESPONSE.map((entry) =>
+  const {
+    data: weights,
+    isLoading,
+    error,
+  } = useSWR<Weight[]>(`${BACKEND_URL}/weights`, getWeights);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error || !weights) {
+    return <p>Error: {error?.message}</p>;
+  }
+
+  const labels = weights.map((entry) =>
     new Date(entry.date).toLocaleDateString()
   );
-  const weights = MOCK_WEIGHT_RESPONSE.map((entry) => entry.weight);
+  const values = weights.map((entry) => entry.weight);
 
   // Creating chart data
   const data = {
-    labels: dates,
+    labels,
     datasets: [
       {
         label: "Weight",
-        data: weights,
+        data: values,
         fill: false,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.1,
