@@ -7,33 +7,28 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pytest = "^8.1.1"
-pytest-mock = "^3.14.0"
-mutmut = "^2.4.4"
 fastapi = "^0.110.1"
-selenium = "^4.19.0"
-radon = "^6.0.1"
-flake8 = "^7.0.0"
-locust = "^2.24.1"
-streamlit = "^1.32.2"
-bandit = "^1.7.8"
-hypothesis = "^6.100.0"
-coverage = "^7.4.4"
 sqlalchemy = "^2.0.29"
 async-sqlalchemy = "^1.0.0"
 aiosqlite = "^0.20.0"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
-passlib = "^1.7.4"
 python-multipart = "^0.0.9"
 bcrypt = "^4.1.2"
 pyjwt = "^2.8.0"
-alembic = "^1.13.1"
-pysqlite3 = "^0.5.2"
 loguru = "^0.7.2"
 
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.13.2"
+pytest = "^8.1.2"
+pytest-mock = "^3.14.0"
+mutmut = "^2.4.5"
+radon = "^6.0.1"
+flake8 = "^7.0.0"
+locust = "^2.26.0"
+bandit = "^1.7.8"
+hypothesis = "^6.100.1"
+coverage = "^7.5.0"
 
 [build-system]
 requires = ["poetry-core"]
