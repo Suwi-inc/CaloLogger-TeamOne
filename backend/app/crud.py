@@ -50,7 +50,7 @@ def verify_access_token(token: str) -> dict:
     except jwt.ExpiredSignatureError:
         # Catch specifically expired token errors
         raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
+    except jwt.InvalidTokenError:
         # Catch other JWT related errors indicating invalid token
         raise HTTPException(status_code=401, detail="Invalid token")
 
