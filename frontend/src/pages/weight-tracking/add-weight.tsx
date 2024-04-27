@@ -22,13 +22,6 @@ const AddWeightModal = ({
     `${BACKEND_URL}/weights`,
     addWeight
   );
-  useEffect(() => {
-    if (openModal) {
-      ref.current?.showModal();
-    } else {
-      ref.current?.close();
-    }
-  }, [openModal]);
 
   const validateForm = ({ weight, date, time }: any) => {
     if (!weight || !date || !time) {
@@ -70,6 +63,7 @@ const AddWeightModal = ({
   return (
     <dialog
       ref={ref}
+      open={openModal}
       onCancel={() => setShowModal(false)}
       onClick={() => setShowModal(false)}
       className="p-5 border border-gray-200 rounded-md"
@@ -99,6 +93,7 @@ const AddWeightModal = ({
           <div className="flex gap-2">
             <input
               type="date"
+              id="date"
               name="date"
               className="p-5 border border-gray-200 rounded-md"
               placeholder="Date"
