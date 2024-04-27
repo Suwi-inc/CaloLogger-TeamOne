@@ -8,13 +8,14 @@ from app.security import JWTBearer, get_user_id
 from app.utils.db import get_db
 
 router = APIRouter(
+    prefix="/weights",
     tags=["Weights"],
     dependencies=[Depends(JWTBearer())],
 )
 
 
 @router.get(
-    "/weights",
+    "/",
     response_model=list[schemas.Weights],
 )
 async def get_weights(
@@ -30,7 +31,7 @@ async def get_weights(
 
 
 @router.post(
-    "/weights",
+    "/",
     response_model=schemas.Weights,
 )
 async def create_weight(
@@ -54,7 +55,7 @@ async def create_weight(
 
 
 @router.delete(
-    "/weights/{weight_id}",
+    "/{weight_id}",
     response_model=schemas.Weights,
 )
 async def delete_weight(
