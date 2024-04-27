@@ -80,5 +80,16 @@ def login(
     }
 
 
+@app.get("/logs")
+async def get_logs():
+    """
+    ## Get logs
+    Returns a list of logs.
+    """
+    with open("logs/app.log") as f:
+        logs = f.readlines()
+    return {"logs": logs}
+
+
 app.include_router(meals.router)
 app.include_router(weights.router)
