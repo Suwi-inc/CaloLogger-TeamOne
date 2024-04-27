@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
+from loguru import logger
 
 from app import schemas
 from app.crud import get_user_weights, create_user_weight, delete_user_weight
@@ -42,6 +43,9 @@ async def create_weight(
     Create a new weight entry for the authenticated user.
     """
     user_id = get_user_id(request)
+    logger.info(
+        f"User_id: {user_id} created weight with id: {weight.id}",
+    )
     return create_user_weight(
         db,
         weight,
@@ -63,5 +67,12 @@ async def delete_weight(
     user_id = get_user_id(request)
     weight = delete_user_weight(db, user_id, weight_id)
     if weight is None:
+        logger.error(
+            f"User_id: {user_id} tried to delete weight with id: {weight_id}, \
+                but weight not found",
+        )
         raise HTTPException(status_code=404, detail="Weight not found")
+    logger.info(
+        f"User_id: {user_id} deleted weight with id: {weight_id}",
+    )
     return weight

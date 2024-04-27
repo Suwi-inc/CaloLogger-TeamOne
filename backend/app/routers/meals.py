@@ -64,7 +64,14 @@ async def delete_meal(
     user_id = get_user_id(request)
     meal = delete_user_meal(db, user_id, meal_id)
     if meal is None:
+        logger.error(
+            f"User_id: {user_id} tried to delete meal with id: {meal_id}, \
+                but meal not found",
+        )
         raise HTTPException(status_code=404, detail="Meal not found")
+    logger.info(
+        f"User_id: {user_id} deleted meal with id: {meal_id}",
+    )
     return meal
 
 
