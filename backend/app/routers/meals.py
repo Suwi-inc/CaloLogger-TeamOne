@@ -43,12 +43,12 @@ async def create_meal(
     Create a new meal for the authenticated user.
     """
     user_id = get_user_id(request)
-    meal_data = create_user_meal(db, meal, user_id)
-    nutritions = get_nutritions(meal_data.ingredients)
+    nutritions = get_nutritions(meal.ingredients)
+    meal_data = create_user_meal(db, meal, nutritions, user_id)
     logger.info(
         f"User_id: {user_id} created meal with id: {meal_data.id}",
     )
-    return schemas.Meal(**meal_data.__dict__, nutritions=nutritions)
+    return meal_data
 
 
 @router.delete(

@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 os.makedirs("db", exist_ok=True)
-SQLALCHEMY_DATABASE_URL = "sqlite:///./db/test.db"  # SQLite database file
+SQLALCHEMY_DATABASE_URL = "sqlite:///./db/test.sqlite"  # SQLite database file
 # SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./test.db"  # Use for async
 
 engine = create_engine(

@@ -71,4 +71,4 @@ def test_get_nutritions_total_computation():
             status_code=200,
         )
         nutrition = get_nutritions("burrito")
-        assert nutrition.calories == 300  # Assert totals are computed correctly
+        assert nutrition.calories == 300  # Assert totals

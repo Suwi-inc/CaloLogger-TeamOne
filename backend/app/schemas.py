@@ -41,16 +41,16 @@ class User(UserBase):
 
 # Meal Schemas
 class MealNutritions(BaseModel):
-    calories: float = 0
-    fat_total_g: float = 0
-    fat_saturated_g: float = 0
-    protein_g: float = 0
-    sodium_mg: float = 0
-    potassium_mg: float = 0
-    cholesterol_mg: float = 0
-    carbohydrates_total_g: float = 0
-    fiber_g: float = 0
-    sugar_g: float = 0
+    calories: float
+    fat_total_g: float
+    fat_saturated_g: float
+    protein_g: float
+    sodium_mg: float
+    potassium_mg: float
+    cholesterol_mg: float
+    carbohydrates_total_g: float
+    fiber_g: float
+    sugar_g: float
 
     class Config:
         from_attributes = True
@@ -99,9 +99,3 @@ class Weights(WeightsBase):
 
     class Config:
         from_attributes = True
-
-
-# # Include this to handle List type fields correctly
-# User.model_rebuild()
-# Meal.model_rebuild()
-# Weights.model_rebuild()
