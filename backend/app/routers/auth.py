@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from loguru import logger
 
 from app import schemas
 import app.crud as crud
@@ -23,7 +24,9 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
             status_code=400,
             detail="Username already registered",
         )
-    return crud.create_user(db=db, user=user)
+    response = crud.create_user(db=db, user=user)
+    logger.info(f"User {user.username} created")
+    return response
 
 
 @router.post("/login", response_model=schemas.Token)

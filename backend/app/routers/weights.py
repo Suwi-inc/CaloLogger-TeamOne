@@ -44,14 +44,15 @@ async def create_weight(
     Create a new weight entry for the authenticated user.
     """
     user_id = get_user_id(request)
-    logger.info(
-        f"User_id: {user_id} created weight with id: {weight.id}",
-    )
-    return create_user_weight(
+    response = create_user_weight(
         db,
         weight,
         user_id,
     )
+    logger.info(
+        f"User_id: {user_id} created weight with id: {response.id}",
+    )
+    return response
 
 
 @router.delete(
