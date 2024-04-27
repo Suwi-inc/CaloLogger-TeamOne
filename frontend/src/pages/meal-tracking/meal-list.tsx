@@ -1,4 +1,4 @@
-import { getDateMedium, getTimeShort } from "../../../utils/parse-time";
+import { getDateMedium, getTimeShort } from "../../utils/parse-time";
 import { Meal } from "../../types";
 import { useState } from "react";
 import { deleteMeal, getMeals } from "../../api/meals";

@@ -1,4 +1,4 @@
-import { getTimeISO } from "../../../utils/parse-time";
+import { getTimeISO } from "../../utils/parse-time";
 import { useEffect, useRef } from "react";
 import { addWeight } from "../../api/weight";
 import { BACKEND_URL } from "../../constants";

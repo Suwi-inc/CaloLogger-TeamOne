@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { SearchResult } from "../../types";
 import { search, addMeal } from "../../api/meals";
 import { BACKEND_URL } from "../../constants";
-import { getTimeISO } from "../../../utils/parse-time";
+import { getTimeISO } from "../../utils/parse-time";
 import useSWRMutation from "swr/mutation";
 
 type MealForm = {

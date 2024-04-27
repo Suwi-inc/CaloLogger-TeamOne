@@ -1,4 +1,4 @@
-import { getDateMedium, getTimeShort } from "../../../utils/parse-time";
+import { getDateMedium, getTimeShort } from "../../utils/parse-time";
 import { Weight } from "../../types";
 import { getWeights, deleteWeight } from "../../api/weight";
 import { BACKEND_URL } from "../../constants";
