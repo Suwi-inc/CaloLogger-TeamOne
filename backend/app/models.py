@@ -13,7 +13,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
 
-    meals = relationship("Meal")
+    meals = relationship("Meal", back_populates="user")
 
 
 class Meal(Base):
@@ -25,8 +25,8 @@ class Meal(Base):
     date = Column(DateTime, default=datetime.now(UTC))
 
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User")
-    nutritions = relationship("Nutritions")
+    user = relationship("User", back_populates="meals")
+    nutritions = relationship("Nutritions", back_populates="meal")
 
 
 class Nutritions(Base):
@@ -46,7 +46,7 @@ class Nutritions(Base):
     sugar_g = Column(Float)
 
     meal_id = Column(Integer, ForeignKey("meals.id"))
-    meal = relationship("Meal")
+    meal = relationship("Meal", back_populates="nutritions")
 
 
 class Weights(Base):
