@@ -5,15 +5,17 @@ from typing import List, Optional
 import jwt
 from dotenv import load_dotenv
 from fastapi import HTTPException
-from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from app import models, schemas
+from app.security import hash_password, verify_password
 
 load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
+JWT_SECRET_KEY = os.getenv(
+    "JWT_SECRET_KEY",
+    os.urandom(32).hex(),
+)
 UTC = timezone.utc
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # Function to create an access token,
@@ -33,14 +35,14 @@ def create_access_token(
     # Append expiration date to payload
     to_encode.update({"exp": expire})
     # Generate JWT using secret key and return it
-    return jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
+    return jwt.encode(to_encode, JWT_SECRET_KEY, algorithm="HS256")
 
 
 # Function to verify if an access token is valid and not expired
 def verify_access_token(token: str) -> dict:
     try:
         # Decode the JWT to validate and extract data
-        decoded_jwt = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        decoded_jwt = jwt.decode(token, JWT_SECRET_KEY, algorithms=["HS256"])
         # Check expiration explicitly to raise an error if token is expired
         if decoded_jwt.get("exp") < datetime.now(UTC).timestamp():
             raise HTTPException(status_code=401, detail="Token has expired")
@@ -60,7 +62,7 @@ def authenticate_user(
     # Retrieve user object by username
     user = get_user_by_username(db, username)
     # Check password validity against hashed password in the database
-    if user and pwd_context.verify(password, user.hashed_password):
+    if user and verify_password(password, user.hashed_password):
         return user
     return None
 
@@ -80,7 +82,7 @@ def get_user_by_username(db: Session, username: str) -> Optional[models.User]:
 # Function to register a new user with encrypted password
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     # Encrypt user's plaintext password for secure storage
-    hashed_password = pwd_context.hash(user.password)
+    hashed_password = hash_password(user.password)
     # Create new user model instance
     db_user = models.User(
         username=user.username,
