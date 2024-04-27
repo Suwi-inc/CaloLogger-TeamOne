@@ -1,5 +1,5 @@
 import { getTimeISO } from "../../utils/parse-time";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { addWeight } from "../../api/weight";
 import { BACKEND_URL } from "../../constants";
 import useSWRMutation from "swr/mutation";
@@ -26,11 +26,6 @@ const AddWeightModal = ({
   const validateForm = ({ weight, date, time }: any) => {
     if (!weight || !date || !time) {
       alert("Please fill all fields");
-      return false;
-    }
-
-    if (isNaN(weight)) {
-      alert("Weight must be a number");
       return false;
     }
 
@@ -100,6 +95,7 @@ const AddWeightModal = ({
             />
             <input
               type="time"
+              id="time"
               name="time"
               className="p-5 border border-gray-200 rounded-md"
               placeholder="Time"

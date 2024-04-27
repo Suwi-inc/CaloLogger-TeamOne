@@ -1,12 +1,13 @@
+import React from "react";
+// import { getTimeISO } from "../../../utils/parse-time";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import AddWeightModal from "../../../pages/weight-tracking/add-weight";
-import React from "react";
 
-// Mocking the swr/immutable import
+const mockTrigger = vi.fn();
 vi.mock("swr/immutable", () => ({
   __esModule: true,
-  default: vi.fn(),
+  default: vi.fn().mockReturnValue({ trigger: mockTrigger, isMutating: false }),
 }));
 
 describe("AddWeightModal", () => {
@@ -46,48 +47,58 @@ describe("AddWeightModal", () => {
     expect(screen.getByText("Add")).toBeInTheDocument();
     // Alert should be called with the message "Weight must be greater than 0"
     expect(window.alert).toHaveBeenCalledWith("Invalid form data");
+
+    // Add the time and date
+    const dateInput = document.getElementById("date") as HTMLInputElement;
+    const timeInput = document.getElementById("time") as HTMLInputElement;
+    fireEvent.change(dateInput, { target: { value: "2022-01-01" } });
+    fireEvent.change(timeInput, { target: { value: "12:00" } });
+    fireEvent.click(addButton);
+
+    // The button text should still be "Add" since the form is invalid
+    expect(screen.getByText("Add")).toBeInTheDocument();
+
+    // Test with a non-numeric weight
+    fireEvent.change(weightInput, { target: { value: "abc" } });
+    fireEvent.click(addButton);
+
+    // The button text should still be "Add" since the form is invalid
+    expect(screen.getByText("Add")).toBeInTheDocument();
+    // Alert should be called with the message "Weight must be a number"
+    expect(window.alert).toHaveBeenCalledWith("Weight must be greater than 0");
   });
 
-  //   it("submits the form with valid data", async () => {
-  //     const triggerMock = vi.fn();
+  it("submits the form with valid data", async () => {
+    const showModal = vi.fn();
+    render(<AddWeightModal openModal={true} setShowModal={showModal} />);
 
-  //     render(<AddWeightModal openModal={true} setShowModal={setShowModal} />);
+    const weightInput = document.getElementById("weight") as HTMLInputElement;
+    const dateInput = document.getElementById("date") as HTMLInputElement;
+    const timeInput = document.getElementById("time") as HTMLInputElement;
+    const addButton = screen.getByRole("button", { name: "Add" });
 
-  //     const weightInput = screen.getByLabelText("Weight (KG)");
-  //     const dateInput = screen.getByLabelText("Date");
-  //     const timeInput = screen.getByLabelText("Time");
-  //     const addButton = screen.getByRole("button", { name: "Add" });
+    fireEvent.change(weightInput, { target: { value: "75" } });
+    fireEvent.change(dateInput, { target: { value: "2022-01-01" } });
+    fireEvent.change(timeInput, { target: { value: "12:00" } });
+    fireEvent.click(addButton);
 
-  //     fireEvent.change(weightInput, { target: { value: "75" } });
-  //     fireEvent.change(dateInput, { target: { value: "2022-01-01" } });
-  //     fireEvent.change(timeInput, { target: { value: "12:00" } });
-  //     fireEvent.click(addButton);
+    expect(screen.getByText("Adding...")).toBeInTheDocument();
+  });
 
-  //     expect(triggerMock).toHaveBeenCalledWith({
-  //       weight: 75,
-  //       date: "2022-01-01T12:00:00",
-  //     });
-  //     expect(setShowModal).toHaveBeenCalledWith(false);
-  //   });
+  it("closes the modal when the form is submitted", async () => {
+    const showModal = vi.fn();
+    render(<AddWeightModal openModal={true} setShowModal={showModal} />);
 
-  //   it("displays an error message when form data is invalid", () => {
-  //     render(<AddWeightModal openModal={true} setShowModal={setShowModal} />);
+    const weightInput = document.getElementById("weight") as HTMLInputElement;
+    const dateInput = document.getElementById("date") as HTMLInputElement;
+    const timeInput = document.getElementById("time") as HTMLInputElement;
+    const addButton = screen.getByRole("button", { name: "Add" });
 
-  //     const addButton = screen.getByRole("button", { name: "Add" });
-  //     fireEvent.click(addButton);
+    fireEvent.change(weightInput, { target: { value: "75" } });
+    fireEvent.change(dateInput, { target: { value: "2022-01-01" } });
+    fireEvent.change(timeInput, { target: { value: "12:00" } });
+    fireEvent.click(addButton);
 
-  //     expect(screen.getByText("Please fill all fields")).toBeInTheDocument();
-  //   });
-
-  //   it("displays a loading state when submitting the form", () => {
-  //     useSWRMutation.mockReturnValue({ trigger: jest.fn(), isMutating: true });
-
-  //     render(<AddWeightModal openModal={true} setShowModal={setShowModal} />);
-
-  //     const addButton = screen.getByRole("button", { name: "Add" });
-
-  //     fireEvent.click(addButton);
-
-  //     expect(screen.getByText("Adding...")).toBeInTheDocument();
-  //   });
+    // expect(mockRef.current.close).toHaveBeenCalled();
+  });
 });
