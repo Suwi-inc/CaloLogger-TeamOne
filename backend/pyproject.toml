@@ -20,6 +20,8 @@ requests = "^2.31.0"
 pytest = "^8.1.2"
 mock = "^5.1.0"
 pytest-mock = "^3.14.0"
+requests-mock = "^1.12.1"
+pytest-cov = "^5.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
