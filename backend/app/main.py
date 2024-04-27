@@ -2,7 +2,6 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from loguru import logger
 
 import app.crud as crud
 import app.models as models
@@ -10,11 +9,9 @@ import app.schemas as schemas
 from app.database import engine
 from app.utils.db import get_db
 from app.routers import meals, weights
-from app.logger import config
+from app.logger import setup_logger
 
-logger.remove()
-logger.configure(**config)
-
+setup_logger()
 
 models.Base.metadata.create_all(bind=engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
