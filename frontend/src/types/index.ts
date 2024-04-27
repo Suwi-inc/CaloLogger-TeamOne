@@ -1,5 +1,5 @@
 type Meal = {
-  name: string;
+  title: string;
   ingredients: string;
   date: string;
   id: number;
@@ -20,7 +20,7 @@ type MealNutritions = {
   sugar_g: number;
 };
 
-type CreateMeal = Pick<Meal, "name" | "ingredients" | "date">;
+type CreateMeal = Pick<Meal, "ingredients" | "date"> & { name: string };
 
 type Weight = {
   id: number;
@@ -35,7 +35,7 @@ type CreateWeight = {
 };
 
 type SearchResult = {
-  name: string;
+  title: string;
   ingredients: string;
 };
 

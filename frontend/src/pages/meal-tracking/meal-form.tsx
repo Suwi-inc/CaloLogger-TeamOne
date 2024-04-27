@@ -1,5 +1,15 @@
 import { useRef, useState, useEffect } from "react";
 import { SearchResult } from "../../types";
+import { search, addMeal } from "../../api/meals";
+import { BACKEND_URL } from "../../constants";
+import { getTimeISO } from "../../../utils/parse-time";
+import useSWRMutation from "swr/mutation";
+
+type MealForm = {
+  date: string;
+  time: string;
+  ingredients: string;
+};
 
 const SaveMealModel = ({
   meal_entry,
@@ -12,6 +22,10 @@ const SaveMealModel = ({
 }) => {
   const { ingredients } = meal_entry;
   const ref = useRef<HTMLDialogElement>(null);
+  const { trigger, isMutating } = useSWRMutation(
+    `${BACKEND_URL}/meals`,
+    addMeal
+  );
 
   useEffect(() => {
     if (openModal) {
@@ -29,18 +43,26 @@ const SaveMealModel = ({
     return true;
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const { date, time, ingredients } = Object.fromEntries(formData.entries());
+    const { date, time, ingredients } = Object.fromEntries(
+      formData.entries()
+    ) as MealForm;
 
     if (!validateForm({ date, time, ingredients })) {
       return;
     }
 
-    const datetime = `${date}T${time}:00.000Z`;
-    console.log(datetime, ingredients);
+    const datetime = getTimeISO(date, time);
+    await trigger({
+      name: meal_entry.title,
+      date: datetime,
+      ingredients,
+    });
+    setShowModal(false);
+    window.location.reload();
   };
 
   return (
@@ -86,9 +108,10 @@ const SaveMealModel = ({
           </div>
           <button
             type="submit"
-            className="p-2 px-4 bg-blue-500 text-white rounded-md"
+            className="p-2 px-4 bg-blue-500 text-white rounded-md disabled:opacity-50"
+            disabled={isMutating}
           >
-            Save
+            {isMutating ? "Saving..." : "Save"}
           </button>
         </form>
       </div>
@@ -98,12 +121,12 @@ const SaveMealModel = ({
 
 const MealResultItem = ({ meal_entry }: { meal_entry: SearchResult }) => {
   const [showModal, setShowModal] = useState(false);
-  const { name, ingredients } = meal_entry;
+  const { title, ingredients } = meal_entry;
 
   return (
     <div className="flex flex-col p-5 border border-gray-200 rounded-md gap-5">
       <div className="flex flex-col gap-2">
-        <h1 className="text-lg">{name}</h1>
+        <h1 className="text-lg">{title}</h1>
         <p className="text-sm">{ingredients}</p>
       </div>
       <SaveMealModel
@@ -121,46 +144,58 @@ const MealResultItem = ({ meal_entry }: { meal_entry: SearchResult }) => {
   );
 };
 
-const MealResultsList = () => {
-  const meal_entries: SearchResult[] = [
-    {
-      name: "Spaghetti",
-      ingredients: "Pasta, tomato sauce, basil, garlic",
-    },
-    {
-      name: "Chicken Salad",
-      ingredients: "Chicken, lettuce, tomato, cucumber",
-    },
-  ];
+const MealResultsList = ({ results }: { results: SearchResult[] }) => {
+  if (results.length === 0) {
+    return <div>No results found! Please try another search.</div>;
+  }
 
   return (
     <div className="flex flex-col gap-5">
-      {meal_entries.map((meal_entry) => (
-        <MealResultItem key={meal_entry.name} meal_entry={meal_entry} />
+      {results.map((meal_entry) => (
+        <MealResultItem key={meal_entry.title} meal_entry={meal_entry} />
       ))}
     </div>
   );
 };
 
-const MealForm = () => (
-  <div className="flex flex-col gap-5">
-    <form className="flex flex-col gap-5">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          className="w-full p-5 border border-gray-200 rounded-md"
-          placeholder="Meal name"
-        />
-        <button
-          type="submit"
-          className="p-2 px-4 bg-blue-500 text-white rounded-md"
-        >
-          Search
-        </button>
-      </div>
-    </form>
-    <MealResultsList />
-  </div>
-);
+const MealForm = () => {
+  const { trigger, isMutating } = useSWRMutation(
+    `${BACKEND_URL}/meals/search`,
+    search
+  );
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const query = formData.get("query") as string;
+    const data = await trigger({ query });
+    setSearchResults(data);
+  };
+
+  return (
+    <div className="flex flex-col gap-5">
+      <form className="flex flex-col gap-5" onSubmit={handleSearch}>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            name="query"
+            className="w-full p-5 border border-gray-200 rounded-md"
+            placeholder="Meal name"
+          />
+          <button
+            type="submit"
+            className="p-2 px-4 bg-blue-500 text-white rounded-md disabled:opacity-50"
+            disabled={isMutating}
+          >
+            {isMutating ? "Searching..." : "Search"}
+          </button>
+        </div>
+      </form>
+      <MealResultsList results={searchResults} />
+    </div>
+  );
+};
 
 export default MealForm;
