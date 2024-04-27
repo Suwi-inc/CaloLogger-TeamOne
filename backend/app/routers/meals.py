@@ -16,7 +16,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/",
+    "",
     response_model=list[schemas.Meal],
 )
 async def get_meals(
@@ -32,7 +32,7 @@ async def get_meals(
 
 
 @router.post(
-    "/",
+    "",
     response_model=schemas.Meal,
 )
 async def create_meal(

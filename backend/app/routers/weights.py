@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/",
+    "",
     response_model=list[schemas.Weights],
 )
 async def get_weights(
@@ -31,7 +31,7 @@ async def get_weights(
 
 
 @router.post(
-    "/",
+    "",
     response_model=schemas.Weights,
 )
 async def create_weight(
