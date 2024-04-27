@@ -34,15 +34,8 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@app.get(
-    "/health",
-    tags=["healthcheck"],
-    summary="Perform a Health Check",
-    response_description="Return HTTP Status Code 200 (OK)",
-    status_code=status.HTTP_200_OK,
-    response_model=schemas.HealthCheck,
-)
-def get_health() -> schemas.HealthCheck:
+@app.head("/health")
+def head_health() -> schemas.HealthCheck:
     """
     ## Perform a Health Check
     Returns:
@@ -64,11 +57,11 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/login", response_model=schemas.Token)
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    user: schemas.UserCreate,
     db: Session = Depends(get_db),
 ):
-    user = crud.authenticate_user(db, form_data.username, form_data.password)
-    if not user:
+    user_auth = crud.authenticate_user(db, user.username, user.password)
+    if not user_auth:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -76,8 +69,8 @@ def login(
         )
     access_token = crud.create_access_token(
         data={
-            "user_id": user.id,
-            "username": user.username,
+            "user_id": user_auth.id,
+            "username": user_auth.username,
         }
     )
     return {
