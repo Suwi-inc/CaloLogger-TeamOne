@@ -1,5 +1,5 @@
 type Meal = {
-  title: string;
+  name: string;
   ingredients: string;
   date: string;
   id: number;

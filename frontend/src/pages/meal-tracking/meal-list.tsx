@@ -12,7 +12,7 @@ const MealEntry = ({ meal_entry }: { meal_entry: Meal }) => {
     `${BACKEND_URL}/meals/${decodeURIComponent(meal_entry.id.toString())}`,
     deleteMeal
   );
-  const { title, date, ingredients, nutritions } = meal_entry;
+  const { name, date, ingredients, nutritions } = meal_entry;
 
   console.log(meal_entry);
   const nutritions_key_Mapping = {
@@ -42,7 +42,7 @@ const MealEntry = ({ meal_entry }: { meal_entry: Meal }) => {
     <div className="flex flex-col p-5 border border-gray-200 rounded-md gap-5">
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-1">
-          <h1 className="text-lg">{title}</h1>
+          <h1 className="text-lg">{name}</h1>
           <p className="text-sm text-gray-500">
             {getDateMedium(date)} at {getTimeShort(date)}
           </p>

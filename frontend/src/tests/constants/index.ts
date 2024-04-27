@@ -3,7 +3,7 @@ import { Meal, Weight } from "../../types";
 export const MOCK_MEALS_RESPONSE: Meal[] = [
   {
     id: 1,
-    title: "Breakfast",
+    name: "Breakfast",
     ingredients: "Eggs, bacon, toast",
     date: "2024-04-26T08:00:00+0000",
     user_id: 1,
@@ -22,7 +22,7 @@ export const MOCK_MEALS_RESPONSE: Meal[] = [
   },
   {
     id: 2,
-    title: "Lunch",
+    name: "Lunch",
     ingredients: "Chicken salad",
     date: "2024-04-26T12:30:00+0000",
     user_id: 1,
@@ -41,7 +41,7 @@ export const MOCK_MEALS_RESPONSE: Meal[] = [
   },
   {
     id: 3,
-    title: "Dinner",
+    name: "Dinner",
     ingredients: "Grilled salmon, rice, vegetables",
     date: "2024-04-26T18:00:00+0000",
     user_id: 1,
@@ -60,7 +60,7 @@ export const MOCK_MEALS_RESPONSE: Meal[] = [
   },
   {
     id: 4,
-    title: "Dinner",
+    name: "Dinner",
     ingredients: "Grilled salmon, rice, vegetables",
     date: "2024-04-27T18:00:00+0000",
     user_id: 1,
