@@ -20,7 +20,10 @@ UTC = timezone.utc
 
 
 # Function to create an access token,
-#   optionally specifying when it should expire
+# optionally specifying when it should expire
+# Uses HS256
+
+
 def create_access_token(
     data: dict,
     expires_delta: Optional[timedelta] = None,
@@ -40,6 +43,7 @@ def create_access_token(
 
 
 # Function to verify if an access token is valid and not expired
+# Uses HS256
 def verify_access_token(token: str) -> dict:
     try:
         # Decode the JWT to validate and extract data
@@ -57,6 +61,7 @@ def verify_access_token(token: str) -> dict:
 
 
 # Function to authenticate a user by verifying provided username and password
+# Uses Bcrypt
 def authenticate_user(
     db: Session, username: str, password: str
 ) -> Optional[models.User]:
@@ -132,6 +137,9 @@ def create_user_meal(
 
 
 # Function to delete a specific meal for a user by meal and user IDs
+# It makes sure that only the respected user able to delete
+
+
 def delete_user_meal(
     db: Session,
     user_id: int,
@@ -185,6 +193,7 @@ def get_user_weights(
 
 
 # Function to remove a specific weight entry for a user by weight and user IDs
+# It makes sure that only the respected user able to delete
 def delete_user_weight(
     db: Session, user_id: int, weight_id: int
 ) -> Optional[models.Weights]:
