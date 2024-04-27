@@ -18,5 +18,5 @@ export const getDateMedium = (timeStamp: string): string => {
 };
 
 export const getTimeISO = (date: string, time: string): string => {
-  return new Date(`${date}T${time}`).toISOString();
+  return new Date(`${date}T${time}Z`).toISOString();
 };
