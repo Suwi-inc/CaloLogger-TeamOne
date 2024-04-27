@@ -9,13 +9,14 @@ from app.utils.db import get_db
 from app.utils.ninja_calls import get_nutritions, get_recipes
 
 router = APIRouter(
+    prefix="/meals",
     tags=["Meals"],
     dependencies=[Depends(JWTBearer())],
 )
 
 
 @router.get(
-    "/meals",
+    "",
     response_model=list[schemas.Meal],
 )
 async def get_meals(
@@ -31,7 +32,7 @@ async def get_meals(
 
 
 @router.post(
-    "/meals",
+    "",
     response_model=schemas.Meal,
 )
 async def create_meal(
@@ -51,7 +52,7 @@ async def create_meal(
 
 
 @router.delete(
-    "/meals/{meal_id}",
+    "/{meal_id}",
     response_model=schemas.Meal,
 )
 async def delete_meal(
@@ -76,7 +77,7 @@ async def delete_meal(
 
 
 @router.get(
-    "/meals/search",
+    "/search",
     response_model=list[schemas.Recipe],
 )
 async def search_meals(
