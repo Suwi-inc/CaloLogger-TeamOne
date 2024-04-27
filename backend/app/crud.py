@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
@@ -111,10 +112,18 @@ def get_user_meals(
 
 # Function to add a new meal record for a user
 def create_user_meal(
-    db: Session, meal: schemas.MealCreate, user_id: int
+    db: Session,
+    meal: schemas.MealCreate,
+    nutritions: schemas.MealNutritions,
+    user_id: int,
 ) -> models.Meal:
+
     # Construct new meal instance from provided data and user association
-    db_meal = models.Meal(**meal.model_dump(), user_id=user_id)
+    db_meal = models.Meal(
+        **meal.model_dump(),
+        user_id=user_id,
+        nutritions=json.loads(nutritions.model_dump_json()),
+    )
     # Persist new meal record to database
     db.add(db_meal)
     db.commit()
