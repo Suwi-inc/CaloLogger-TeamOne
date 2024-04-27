@@ -78,7 +78,7 @@ const SignUp = () => {
               name="username"
               required
               className="w-full border border-gray-300 rounded-md py-2 px-3 text-md mt-1"
-              placeholder="Enter your full name"
+              placeholder="Enter your username"
             />
           </div>
           <div>
