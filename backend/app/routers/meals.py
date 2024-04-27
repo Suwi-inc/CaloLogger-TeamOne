@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
+from loguru import logger
 
 from app import schemas
 from app.crud import create_user_meal, get_user_meals, delete_user_meal
@@ -43,6 +44,9 @@ async def create_meal(
     user_id = get_user_id(request)
     meal_data = create_user_meal(db, meal, user_id)
     nutritions = get_nutritions(meal_data.ingredients)
+    logger.info(
+        f"User_id: {user_id} created meal with id: {meal_data.id}",
+    )
     return schemas.Meal(**meal_data.__dict__, nutritions=nutritions)
 
 
