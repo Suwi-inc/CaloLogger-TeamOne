@@ -1,14 +1,17 @@
 import useLogin from "../hooks/useLogin";
 import { Navigate } from "react-router-dom";
 import { signIn } from "../api/auth";
-
-type FormData = {
-  email: string;
-  password: string;
-};
+import { BACKEND_URL } from "../constants";
+import useSWRMutation from "swr/mutation";
+import type { FormData } from "../api/auth";
 
 const Login = () => {
   const token = useLogin();
+
+  const { trigger, isMutating } = useSWRMutation(
+    `${BACKEND_URL}/login`,
+    signIn
+  );
 
   if (token) {
     return <Navigate to="/" />;
@@ -18,9 +21,13 @@ const Login = () => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries()) as FormData;
+    const { username, password } = Object.fromEntries(
+      formData.entries()
+    ) as FormData;
+
     try {
-      await signIn(data.email, data.password);
+      const token = await trigger({ username, password });
+      localStorage.setItem("token", token);
       window.location.reload();
     } catch (error) {
       const errorMessage = (error as Error).message;
@@ -35,16 +42,16 @@ const Login = () => {
         <p className="mb-4">Enter your email and password to login.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="font-semibold">
-              Email
+            <label htmlFor="username" className="font-semibold">
+              Username
             </label>
             <input
-              type="email"
-              id="email"
-              name="email"
+              type="text"
+              id="username"
+              name="username"
               required
               className="w-full border border-gray-300 rounded-md py-2 px-3 text-md mt-1"
-              placeholder="name@company.com"
+              placeholder="Enter your username"
             />
           </div>
           <div>
@@ -62,9 +69,10 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white rounded-md py-2 mt-4"
+            className="w-full bg-blue-500 text-white rounded-md py-2 mt-4 disabled:opacity-50"
+            disabled={isMutating}
           >
-            Login
+            {isMutating ? "Logging in..." : "Login"}
           </button>
           <p className="text-center text-sm mt-4">
             Don't have an account?{" "}

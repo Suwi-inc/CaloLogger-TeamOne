@@ -1,8 +1,9 @@
 import Container from "../components/container";
 import { getDateMedium, getTimeShort } from "../../utils/parse-time";
-import { MOCK_WEIGHT_RESPONSE } from "../constants";
 import { Weight } from "../types";
 import { useEffect, useRef, useState } from "react";
+import { getWeights, addWeight } from "../api/weight";
+import useSWR from "swr";
 
 const AddWeightModal = ({
   openModal,
@@ -40,7 +41,7 @@ const AddWeightModal = ({
     return true;
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -49,7 +50,10 @@ const AddWeightModal = ({
     if (!validateForm({ weight, date, time })) {
       return;
     }
-    console.log(weight);
+
+    const datetime = `${date}T${time}:00.000Z`;
+
+    await addWeight(Number(weight), datetime);
   };
 
   return (
@@ -141,13 +145,29 @@ const WeightItem = ({ weight_entry }: { weight_entry: Weight }) => {
   );
 };
 
-const WeightList = () => (
-  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
-    {MOCK_WEIGHT_RESPONSE.map((weight_entry) => (
-      <WeightItem key={weight_entry.id} weight_entry={weight_entry} />
-    ))}
-  </div>
-);
+const WeightList = () => {
+  const { data, isLoading, error } = useSWR<Weight[]>("/weights", getWeights);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error || !data) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  if (data.length === 0) {
+    return <p>No weight entries</p>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      {data.map((weight_entry) => (
+        <WeightItem key={weight_entry.id} weight_entry={weight_entry} />
+      ))}
+    </div>
+  );
+};
 
 const WeightTracking = () => {
   const [showModal, setShowModal] = useState(false);

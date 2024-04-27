@@ -1,12 +1,15 @@
-const backendUrl = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:5000";
+export type FormData = {
+  username: string;
+  password: string;
+};
 
-export const signIn = async (email: string, password: string) => {
-  const response = await fetch(`${backendUrl}/login`, {
+export const signIn = async (url: string, { arg }: { arg: FormData }) => {
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify(arg),
   });
 
   if (!response.ok) {
@@ -14,20 +17,16 @@ export const signIn = async (email: string, password: string) => {
   }
 
   const data = await response.json();
-  return data.token;
+  return data.access_token as string;
 };
 
-export const signUp = async (
-  email: string,
-  password: string,
-  fullname: string
-) => {
-  const response = await fetch(`${backendUrl}/signup`, {
+export const signUp = async (url: string, { arg }: { arg: FormData }) => {
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password, fullname }),
+    body: JSON.stringify(arg),
   });
 
   if (!response.ok) {
