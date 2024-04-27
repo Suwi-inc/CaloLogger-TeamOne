@@ -16,3 +16,7 @@ export const getDateMedium = (timeStamp: string): string => {
   }
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
 };
+
+export const getTimeISO = (date: string, time: string): string => {
+  return new Date(`${date}T${time}`).toISOString();
+};
