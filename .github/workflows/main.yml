@@ -90,6 +90,22 @@ jobs:
         working-directory: ./frontend
         run: npm run test
 
+  lint_frontend:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install
+      - name: Run ESLint
+        working-directory: ./frontend
+        run: npm run lint
+
   security:
     name: security
     strategy:

@@ -10,9 +10,9 @@ import Logout from "./Logout";
  * @param path - The path to navigate to when the item is clicked.
  */
 const NavItem = ({ name, path }: { name: string; path: string }) => (
-  <li className="text-gray-600 hover:text-black transition duration-200">
-    <Link to={path}>{name}</Link>
-  </li>
+    <li className="text-gray-600 hover:text-black transition duration-200">
+        <Link to={path}>{name}</Link>
+    </li>
 );
 
 /**
@@ -20,11 +20,11 @@ const NavItem = ({ name, path }: { name: string; path: string }) => (
  * @returns The rendered navigation list component.
  */
 const NavList = () => {
-  const list = [
-    { name: "Dashboard", path: "/" },
-    { name: "Meal Tracking", path: "/meal-tracking" },
-    { name: "Weight Tracking", path: "/weight-tracking" },
-  ];
+    const list = [
+        { name: "Dashboard", path: "/" },
+        { name: "Meal Tracking", path: "/meal-tracking" },
+        { name: "Weight Tracking", path: "/weight-tracking" },
+    ];
 
     return (
         <ul className="flex space-x-6 items-center">
@@ -41,19 +41,19 @@ const NavList = () => {
  * @returns The header component.
  */
 const Header = () => {
-  const token = useLogin();
+    const token = useLogin();
 
-  if (!token) return <></>;
-  return (
-    <header className="w-full bg-gray-100">
-      <Container>
-        <div className="flex justify-between items-center py-3">
-          <h1 className="text-lg font-semibold">Health Tracker</h1>
-          <NavList />
-        </div>
-      </Container>
-    </header>
-  );
+    if (!token) return <></>;
+    return (
+        <header className="w-full bg-gray-100">
+            <Container>
+                <div className="flex justify-between items-center py-3">
+                    <h1 className="text-lg font-semibold">Health Tracker</h1>
+                    <NavList />
+                </div>
+            </Container>
+        </header>
+    );
 };
 
 export { NavItem, NavList };
