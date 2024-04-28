@@ -9,6 +9,12 @@ export default defineConfig({
         globals: true,
         environment: "jsdom",
         setupFiles: "./src/tests/setup.ts",
-        coverage: { provider: "istanbul", reporter: ["html"] },
+        coverage: {
+            provider: "istanbul",
+            // reporter: ["html"],
+            thresholds: {
+                lines: 65,
+            },
+        },
     },
 });
