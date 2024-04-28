@@ -15,6 +15,11 @@ RUN poetry install --without dev --no-root
 
 FROM python:3.11-slim-buster as runtime
 
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
+
 WORKDIR /code
 
 ENV VIRTUAL_ENV=/code/.venv \
