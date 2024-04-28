@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { SearchResult } from "../../types";
 import { search, addMeal } from "../../api/meals";
 import { BACKEND_URL } from "../../constants";
