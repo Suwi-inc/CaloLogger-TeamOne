@@ -43,6 +43,9 @@ jobs:
       - name: Install dependencies
         working-directory: ./backend
         run: poetry install
+      - name: Initalize test DB
+        working-directory: ./backend
+        run: poetry run python -m scripts.create_db
       - name: Run test coverage
         working-directory: ./backend
         run: poetry run pytest --cov=app --cov-branch --cov-report term-missing --cov-fail-under=65 tests/

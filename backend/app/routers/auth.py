@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException, status
 from loguru import logger
 
 from app import schemas
 import app.crud as crud
-from app.utils.db import get_db
 
 
 router = APIRouter(
@@ -32,7 +30,6 @@ async def create_user(user: schemas.UserCreate):
 @router.post("/login", response_model=schemas.Token)
 async def login(
     user: schemas.UserCreate,
-    db: Session = Depends(get_db),
 ):
     """
     ## Login a user
