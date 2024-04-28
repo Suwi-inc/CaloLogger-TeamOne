@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { nanoid } from "nanoid";
 import useLogin from "../hooks/useLogin";
 import Container from "./container";
 import Logout from "./Logout";
@@ -27,8 +28,8 @@ const NavList = () => {
 
     return (
         <ul className="flex space-x-6 items-center">
-            {list.map((item, index) => (
-                <NavItem key={index} name={item.name} path={item.path} />
+            {list.map((item) => (
+                <NavItem key={nanoid()} name={item.name} path={item.path} />
             ))}
             <Logout />
         </ul>

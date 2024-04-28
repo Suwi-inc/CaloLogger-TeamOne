@@ -1,3 +1,4 @@
+from typing import Optional
 import bcrypt
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -20,7 +21,7 @@ class JWTBearer(HTTPBearer):
         the HTTP Authorization header.
         Raises HTTPException for any authentication failure.
         """
-        credentials: HTTPAuthorizationCredentials = None
+        credentials: Optional[HTTPAuthorizationCredentials] = None
         credentials = await super().__call__(request)
         if not credentials or credentials.scheme.lower() != "bearer":
             raise HTTPException(
