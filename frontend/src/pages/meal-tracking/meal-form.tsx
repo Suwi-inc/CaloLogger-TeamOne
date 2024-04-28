@@ -74,6 +74,11 @@ export const SaveMealModel = ({
             onCancel={() => setShowModal(false)}
             onClick={() => setShowModal(false)}
             className="p-5 border border-gray-200 rounded-md"
+            onKeyUp={(e) => {
+                if (e.key === "Escape") {
+                    setShowModal(false);
+                }
+            }}
         >
             <div
                 className="flex flex-col justify-end p-5"
