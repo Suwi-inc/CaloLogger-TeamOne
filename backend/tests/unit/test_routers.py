@@ -112,7 +112,7 @@ def test_get_weights(client, db):
 def test_create_weight(client, db):
     token_response = authenticate_user(client, "testuser", "testpass123")
     token = token_response.json()["access_token"]
-    weight_data = {"weight": 70.5, "date": datetime.now().isoformat()}
+    weight_data = {"weight": 70, "date": datetime.now().isoformat()}
     response = client.post(
         "/weights",
         json=weight_data,
@@ -121,4 +121,4 @@ def test_create_weight(client, db):
         },
     )
     assert response.status_code == 200
-    assert response.json()["weight"] == 70.5
+    assert response.json()["weight"] == 70
