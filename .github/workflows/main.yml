@@ -27,45 +27,50 @@ jobs:
       - name: Run Cyclomatic Complexity test
         working-directory: ./backend
         run: poetry run flake8 --max-complexity=10 .
-      # - name: Run test coverage
-      #   working-directory: ./backend
-      #   run: poetry run pytest --cov=app --cov-branch --cov-report term-missing --cov-fail-under=85 tests/
 
-  #   unit_tests:
-  #     name: Run Unit Tests
-  #     if: github.event_name == 'push' # Only run on push events
-  #     runs-on: ubuntu-latest
-  #     steps:
-  #       - uses: actions/checkout@v4
-  #       - uses: actions/setup-python@v4
-  #         with:
-  #           python-version: "3.11"
-  #       - name: Run image
-  #         uses: abatilo/actions-poetry@v2
-  #         with:
-  #           poetry-version: "1.7.1"
-  #       - name: Install dependencies
-  #         run: poetry install
-  #       - name: Run unit tests
-  #         run: poetry run pytest tests/unit
+  unit_test:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies
+        working-directory: ./backend
+        run: poetry install
+      - name: Run test coverage
+        working-directory: ./backend
+        run: poetry run pytest --cov=app --cov-branch --cov-report term-missing --cov-fail-under=65 tests/
 
-  #   e2e_tests:
-  #     name: Run End-to-End Tests
-  #     if: github.event_name == 'pull_request' # Only run on pull request events
-  #     runs-on: ubuntu-latest
-  #     steps:
-  #       - uses: actions/checkout@v4
-  #       - uses: actions/setup-python@v4
-  #         with:
-  #           python-version: "3.11"
-  #       - name: Run image
-  #         uses: abatilo/actions-poetry@v2
-  #         with:
-  #           poetry-version: "1.7.1"
-  #       - name: Install dependencies
-  #         run: poetry install
-  #       - name: Run unit tests
-  #         run: poetry run pytest tests/e2e
+  maintainability_index:
+    name: Check Maintainability Index
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies including Radon
+        working-directory: ./backend
+        run: |
+          poetry install
+      - name: Check Maintainability Index
+        working-directory: ./backend
+        run: |
+          score=$(poetry run radon mi app/ --json | python app/scripts/check_mi.py)
+          if [ $score -lt 70 ]; then
+            echo "Maintainability Index below threshold: $score"
+            exit 1
+          fi
 
   security:
     name: security

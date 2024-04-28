@@ -87,6 +87,7 @@ def test_create_meal(client, db):
     meal_data = {
         "name": "Salad",
         "ingredients": "Lettuce, Tomato",
+        "nutritions": {},
         "date": datetime.now().isoformat(),
     }
     response = client.post(

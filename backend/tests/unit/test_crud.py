@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 
 from app import crud
-from app.schemas import UserCreate, MealCreate, WeightsCreate
+from app.schemas import UserCreate, MealCreate, WeightsCreate, MealNutritions
 from app.database import Base, engine
 
 
@@ -59,15 +59,6 @@ def test_create_user(db: Session):
     assert created_user
 
 
-# Test creation of a meal with invalid input
-def test_create_user_meal(db: Session, test_user: UserCreate):
-    meal_data = MealCreate(
-        name="test", ingredients="test ingredients", date=datetime.now()
-    )
-    created_meal = crud.create_user_meal(db, meal_data, user_id=test_user.id)
-    assert created_meal is not None, "Meal should be successfully created"
-
-
 # Test creation of a weight entry with invalid (negative) weight
 def test_create_user_weight(db: Session, test_user: UserCreate):
     weight_data = WeightsCreate(weight=70.5, date=datetime.now())
@@ -77,35 +68,6 @@ def test_create_user_weight(db: Session, test_user: UserCreate):
         user_id=test_user.id,
     )
     assert created_weight is not None, "Weight entry should be successful"
-
-
-def test_create_meal_with_maximum_length_name(
-    db: Session,
-    test_user: UserCreate,
-):
-    """Test creating a meal with the maximum allowed length for name."""
-    long_name = "x" * 255  # Assuming 255 characters is the limit
-    meal = MealCreate(
-        name=long_name,
-        ingredients="Ingredients",
-        date=datetime.now(),
-    )
-    created_meal = crud.create_user_meal(db, meal, user_id=test_user.id)
-    assert created_meal.name == long_name, "Should handle maximum length names"
-
-
-def test_create_meal_with_empty_ingredients(
-    db: Session,
-    test_user: UserCreate,
-):
-    """Test creating a meal with empty ingredients."""
-    meal = MealCreate(
-        name="Healthy Salad",
-        ingredients="",
-        date=datetime.now(),
-    )
-    created_meal = crud.create_user_meal(db, meal, user_id=test_user.id)
-    assert created_meal, "Meal with empty ingredients should still be created"
 
 
 def test_user_login_flow(db: Session):
@@ -124,16 +86,114 @@ def test_user_login_flow(db: Session):
     ), "Token verification should pass with correct credentials"
 
 
+def test_create_user_meal(db: Session, test_user: UserCreate):
+    MealNutritions_data = MealNutritions(
+        calories=500,
+        fat_total_g=10,
+        fat_saturated_g=3.5,
+        protein_g=25,
+        sodium_mg=300,
+        potassium_mg=500,
+        cholesterol_mg=30,
+        carbohydrates_total_g=50,
+        fiber_g=4,
+        sugar_g=10,
+    )
+
+    meal_data = MealCreate(
+        name="test", ingredients="test ingredients", date=datetime.now()
+    )
+    created_meal = crud.create_user_meal(
+        db, meal_data, MealNutritions_data, user_id=test_user.id
+    )
+    assert created_meal is not None, "Meal should be successfully created"
+
+
+def test_create_meal_with_maximum_length_name(
+    db: Session,
+    test_user: UserCreate,
+):
+    MealNutritions_data = MealNutritions(
+        calories=500,
+        fat_total_g=10,
+        fat_saturated_g=3.5,
+        protein_g=25,
+        sodium_mg=300,
+        potassium_mg=500,
+        cholesterol_mg=30,
+        carbohydrates_total_g=50,
+        fiber_g=4,
+        sugar_g=10,
+    )
+
+    long_name = "x" * 255  # Assuming 255 characters is the limit
+    meal = MealCreate(
+        name=long_name,
+        ingredients="Ingredients",
+        date=datetime.now(),
+    )
+    created_meal = crud.create_user_meal(
+        db, meal, MealNutritions_data, user_id=test_user.id
+    )
+    assert created_meal.name == long_name, "Should handle maximum length names"
+
+
+def test_create_meal_with_empty_ingredients(
+    db: Session,
+    test_user: UserCreate,
+):
+    MealNutritions_data = MealNutritions(
+        calories=500,
+        fat_total_g=10,
+        fat_saturated_g=3.5,
+        protein_g=25,
+        sodium_mg=300,
+        potassium_mg=500,
+        cholesterol_mg=30,
+        carbohydrates_total_g=50,
+        fiber_g=4,
+        sugar_g=10,
+    )
+
+    meal = MealCreate(
+        name="Healthy Salad",
+        ingredients="",
+        date=datetime.now(),
+    )
+    created_meal = crud.create_user_meal(
+        db, meal, MealNutritions_data, user_id=test_user.id
+    )
+    assert created_meal, "Meal with empty ingredients should still be created"
+
+
 def test_meal_creation_performance(db: Session, test_user: UserCreate):
     """Test the performance of creating multiple meals."""
     start_time = datetime.now()
+    MealNutritions_data = MealNutritions_data = MealNutritions(
+        calories=500,
+        fat_total_g=10,
+        fat_saturated_g=3.5,
+        protein_g=25,
+        sodium_mg=300,
+        potassium_mg=500,
+        cholesterol_mg=30,
+        carbohydrates_total_g=50,
+        fiber_g=4,
+        sugar_g=10,
+    )
+
     for _ in range(100):  # Creating 100 meals to test performance
         meal = MealCreate(
             name="Performance Test Meal",
             ingredients="Lots of stuff",
             date=datetime.now(),
         )
-        crud.create_user_meal(db, meal, user_id=test_user.id)
+        crud.create_user_meal(
+            db,
+            meal,
+            MealNutritions_data,
+            user_id=test_user.id,
+        )
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
     assert (
