@@ -63,12 +63,14 @@ jobs:
         working-directory: ./backend
         run: |
           poetry install
+          sudo apt-get install jq  # Install jq if not available
       - name: Check Maintainability Index
         working-directory: ./backend
         run: |
-          score=$(poetry run radon mi app/ --json | python app/scripts/check_mi.py)
-          if [ $score -lt 70 ]; then
-            echo "Maintainability Index below threshold: $score"
+          MI_SCORE=$(poetry run radon mi app/ --json | jq '[.[] | .mi] | add / length')
+          echo "Average Maintainability Index Score: $MI_SCORE"
+          if (( $(echo "$MI_SCORE < 70" | bc -l) )); then
+            echo "Maintainability Index below threshold: $MI_SCORE"
             exit 1
           fi
 
