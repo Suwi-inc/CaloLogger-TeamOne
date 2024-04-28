@@ -16,7 +16,7 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -36,7 +36,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: UUID
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -53,7 +53,7 @@ class MealNutritions(BaseModel):
     fiber_g: float
     sugar_g: float
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -72,7 +72,7 @@ class Meal(MealBase):
     user_id: UUID
     nutritions: MealNutritions
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -80,7 +80,7 @@ class Recipe(BaseModel):
     title: str
     ingredients: str
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -98,5 +98,5 @@ class Weights(WeightsBase):
     id: UUID
     user_id: UUID
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

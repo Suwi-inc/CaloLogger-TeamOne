@@ -4,7 +4,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-from app.database import Base
 from app.utils.db import get_db
 from app.main import app
 
@@ -16,7 +15,6 @@ TestingSessionLocal = sessionmaker(
     autoflush=False,
     bind=engine,
 )
-Base.metadata.create_all(bind=engine)  # Ensure your tables are created
 
 
 @pytest.fixture(scope="function")
