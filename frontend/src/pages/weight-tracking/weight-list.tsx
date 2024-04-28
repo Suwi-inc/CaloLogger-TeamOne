@@ -12,6 +12,11 @@ const WeightItem = ({ weight_entry }: { weight_entry: Weight }) => {
   ).toString();
   const { trigger, isMutating } = useSWRMutation(deleteURL, deleteWeight);
 
+  /**
+   * Handles the deletion of a weight entry.
+   * This function triggers the deletion and reloads the page upon successful deletion.
+   * If an error occurs during the deletion, an alert is displayed.
+   */
   const deleteWeightHandler = async () => {
     try {
       await trigger();
@@ -55,11 +60,9 @@ const WeightList = () => {
   if (isLoading) {
     return <p>Loading...</p>;
   }
-
   if (error || !data) {
     return <p>Error: {error.message}</p>;
   }
-
   if (data.length === 0) {
     return <p>No weight entries</p>;
   }

@@ -35,7 +35,6 @@ const WeightChart = () => {
   if (isLoading) {
     return <p>Loading...</p>;
   }
-
   if (error || !weights) {
     return <p>Error: {error?.message}</p>;
   }

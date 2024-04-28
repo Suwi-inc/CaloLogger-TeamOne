@@ -27,7 +27,12 @@ export const SaveMealModel = ({
     addMeal
   );
 
-  const validateForm = ({ date, time, ingredients }: MealForm) => {
+  /**
+   * Validates the meal form.
+   * @param {MealForm} form - The meal form object containing the date, time, and ingredients.
+   * @returns {boolean} - Returns true if the form is valid, otherwise false.
+   */
+  const validateForm = ({ date, time, ingredients }: MealForm): boolean => {
     if (!date || !time || !ingredients) {
       alert("Please fill all fields");
       return false;
@@ -35,6 +40,11 @@ export const SaveMealModel = ({
     return true;
   };
 
+  /**
+   * Handles the form submission event.
+   * 
+   * @param e - The form submission event.
+   */
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;

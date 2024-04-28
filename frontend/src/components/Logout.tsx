@@ -1,3 +1,7 @@
+/**
+ * Logout component.
+ * Renders a button that, when clicked, removes the token from local storage and reloads the page.
+ */
 const Logout = () => (
   <button
     onClick={() => {

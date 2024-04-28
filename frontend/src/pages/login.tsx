@@ -17,6 +17,11 @@ const Login = () => {
     return <Navigate to="/" />;
   }
 
+  /**
+   * Handles the form submission event.
+   * 
+   * @param e - The form submission event.
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
