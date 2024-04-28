@@ -66,7 +66,7 @@ jobs:
       - name: Check Maintainability Index
         working-directory: ./backend
         run: |
-          score=$(poetry run radon mi app/ --json | python check_mi.py)
+          score=$(poetry run radon mi app/ --json | python app/scripts/check_mi.py)
           if [ $score -lt 70 ]; then
             echo "Maintainability Index below threshold: $score"
             exit 1
