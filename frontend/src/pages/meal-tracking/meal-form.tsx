@@ -72,12 +72,14 @@ export const SaveMealModel = ({
     return (
         <div
             onClick={() => setShowModal(false)}
+            onKeyUp={(e) => e.stopPropagation()}
             className="p-5 border border-gray-200 flex items-center justify-center rounded-md fixed top-0 left-0 right-0 min-h-screen bg-black backdrop:bg-black bg-opacity-50 z-50"
             aria-modal="true"
         >
             <div
                 className="flex flex-col justify-end p-10 w-fit bg-white rounded-md shadow-lg"
                 onClick={(e) => e.stopPropagation()}
+                onKeyUp={(e) => e.stopPropagation()}
             >
                 <h3 className="text-3xl font-bold mb-5 text-center">
                     Save Meal
