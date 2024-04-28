@@ -1,19 +1,27 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
+from sqlmodel import SQLModel
 
-import app.models as models
 import app.schemas as schemas
 from app.database import engine
 from app.routers import meals, weights, auth
 from app.logger import setup_logger
 
-setup_logger()
 
-models.Base.metadata.create_all(bind=engine)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_logger()
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+
+    yield
+
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 # Configure CORS
 origins = ["*"]

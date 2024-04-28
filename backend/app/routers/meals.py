@@ -1,11 +1,11 @@
+from typing import Optional
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Request
-from sqlalchemy.orm import Session
 from loguru import logger
 
 from app import schemas
 from app.crud import create_user_meal, get_user_meals, delete_user_meal
 from app.security import JWTBearer, get_user_id
-from app.utils.db import get_db
 from app.utils.ninja_calls import get_nutritions, get_recipes
 
 router = APIRouter(
@@ -19,15 +19,13 @@ router = APIRouter(
     "",
     response_model=list[schemas.Meal],
 )
-async def get_meals(
-    request: Request, db: Session = Depends(get_db)
-) -> list[schemas.Meal]:
+async def get_meals(request: Request) -> list[schemas.Meal]:
     """
     ## Get all meals
     Retrieve all meals for the authenticated user.
     """
     user_id = get_user_id(request)
-    meals = get_user_meals(db, user_id)
+    meals = await get_user_meals(user_id)
     return meals
 
 
@@ -36,15 +34,16 @@ async def get_meals(
     response_model=schemas.Meal,
 )
 async def create_meal(
-    request: Request, meal: schemas.MealCreate, db: Session = Depends(get_db)
+    request: Request,
+    meal: schemas.MealCreate,
 ) -> schemas.Meal:
     """
     ## Create a new meal
     Create a new meal for the authenticated user.
     """
     user_id = get_user_id(request)
-    nutritions = get_nutritions(meal.ingredients)
-    meal_data = create_user_meal(db, meal, nutritions, user_id)
+    nutritions = await get_nutritions(meal.ingredients)
+    meal_data = await create_user_meal(meal, nutritions, user_id)
     logger.info(
         f"User_id: {user_id} created meal with id: {meal_data.id}",
     )
@@ -53,17 +52,18 @@ async def create_meal(
 
 @router.delete(
     "/{meal_id}",
-    response_model=schemas.Meal,
+    response_model=Optional[schemas.Meal],
 )
 async def delete_meal(
-    request: Request, meal_id: int, db: Session = Depends(get_db)
-) -> schemas.Meal:
+    request: Request,
+    meal_id: UUID,
+) -> Optional[schemas.Meal]:
     """
     ## Delete a meal
     Delete a meal by its ID for the authenticated user.
     """
     user_id = get_user_id(request)
-    meal = delete_user_meal(db, user_id, meal_id)
+    meal = await delete_user_meal(user_id, meal_id)
     if meal is None:
         logger.error(
             f"User_id: {user_id} tried to delete meal with id: {meal_id}, \
@@ -87,4 +87,4 @@ async def search_meals(
     ## Search for meals
     Search for meals by name for the authenticated user.
     """
-    return get_recipes(query)
+    return await get_recipes(query)

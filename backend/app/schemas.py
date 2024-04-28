@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -33,7 +34,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    id: int
+    id: UUID
 
     class Config:
         from_attributes = True
@@ -67,8 +68,8 @@ class MealCreate(MealBase):
 
 
 class Meal(MealBase):
-    id: int
-    user_id: int
+    id: UUID
+    user_id: UUID
     nutritions: MealNutritions
 
     class Config:
@@ -94,8 +95,8 @@ class WeightsCreate(WeightsBase):
 
 
 class Weights(WeightsBase):
-    id: int
-    user_id: int
+    id: UUID
+    user_id: UUID
 
     class Config:
         from_attributes = True

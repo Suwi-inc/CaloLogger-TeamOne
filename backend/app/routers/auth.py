@@ -13,24 +13,24 @@ router = APIRouter(
 
 
 @router.post("/signup", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+async def create_user(user: schemas.UserCreate):
     """
     ## Create a new user
     Creates a new user and returns it.
     """
-    db_user = crud.get_user_by_username(db, username=user.username)
+    db_user = await crud.get_user_by_username(user.username)
     if db_user:
         raise HTTPException(
             status_code=400,
             detail="Username already registered",
         )
-    response = crud.create_user(db=db, user=user)
+    response = await crud.create_user(user)
     logger.info(f"User {user.username} created")
     return response
 
 
 @router.post("/login", response_model=schemas.Token)
-def login(
+async def login(
     user: schemas.UserCreate,
     db: Session = Depends(get_db),
 ):
@@ -38,7 +38,7 @@ def login(
     ## Login a user
     Logs in a user and returns a token.
     """
-    user_auth = crud.authenticate_user(db, user.username, user.password)
+    user_auth = await crud.authenticate_user(user.username, user.password)
     if not user_auth:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -47,7 +47,7 @@ def login(
         )
     access_token = crud.create_access_token(
         data={
-            "user_id": user_auth.id,
+            "user_id": str(user_auth.id),
             "username": user_auth.username,
         }
     )

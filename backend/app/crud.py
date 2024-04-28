@@ -2,14 +2,17 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
+from uuid import UUID
 
 import jwt
 from dotenv import load_dotenv
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from app import models, schemas
 from app.utils.security import hash_password, verify_password
+from app.database import engine
 
 load_dotenv()
 JWT_SECRET_KEY = os.getenv(
@@ -22,8 +25,6 @@ UTC = timezone.utc
 # Function to create an access token,
 # optionally specifying when it should expire
 # Uses HS256
-
-
 def create_access_token(
     data: dict,
     expires_delta: Optional[timedelta] = None,
@@ -66,11 +67,12 @@ def verify_access_token(token: str) -> dict:
 
 # Function to authenticate a user by verifying provided username and password
 # Uses Bcrypt
-def authenticate_user(
-    db: Session, username: str, password: str
+async def authenticate_user(
+    username: str,
+    password: str,
 ) -> Optional[models.User]:
     # Retrieve user object by username
-    user = get_user_by_username(db, username)
+    user = await get_user_by_username(username)
     # Check password validity against hashed password in the database
     if user and verify_password(password, user.hashed_password):
         return user
@@ -78,19 +80,19 @@ def authenticate_user(
 
 
 # Function to fetch a user from the database by username
-def get_user_by_username(db: Session, username: str) -> Optional[models.User]:
+async def get_user_by_username(
+    username: str,
+) -> Optional[models.User]:
     # Directly query the database for a single user by username
-    return (
-        db.query(models.User)
-        .filter(
-            models.User.username == username,
-        )
-        .first()
-    )
+    async with AsyncSession(engine) as session:
+        q = select(models.User).where(models.User.username == username)
+        result = await session.execute(q)
+        user = result.scalars().first()
+        return user
 
 
 # Function to register a new user with encrypted password
-def create_user(db: Session, user: schemas.UserCreate) -> models.User:
+async def create_user(user: schemas.UserCreate) -> models.User:
     # Encrypt user's plaintext password for secure storage
     hashed_password = hash_password(user.password)
     # Create new user model instance
@@ -98,33 +100,30 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
         username=user.username,
         hashed_password=hashed_password,
     )
-    # Save new user to database
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    async with AsyncSession(engine) as session:
+        # Add user to database
+        session.add(db_user)
+        await session.commit()
+        await session.refresh(db_user)
+        return db_user
 
 
 # Function to retrieve paginated list of meal entries for a specific user
-def get_user_meals(
-    db: Session, user_id: int, skip: int = 0, limit: int = 100
+async def get_user_meals(
+    user_id: UUID, skip: int = 0, limit: int = 100
 ) -> List[models.Meal]:
-    # Query for meals based on user ID with pagination
-    return (
-        db.query(models.Meal)
-        .filter(models.Meal.user_id == user_id)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    async with AsyncSession(engine) as session:
+        q = select(models.Meal).where(models.Meal.user_id == user_id)
+        result = await session.execute(q)
+        meals = result.scalars().all()
+        return meals
 
 
 # Function to add a new meal record for a user
-def create_user_meal(
-    db: Session,
+async def create_user_meal(
     meal: schemas.MealCreate,
     nutritions: schemas.MealNutritions,
-    user_id: int,
+    user_id: str,
 ) -> models.Meal:
 
     # Construct new meal instance from provided data and user association
@@ -133,86 +132,82 @@ def create_user_meal(
         user_id=user_id,
         nutritions=json.loads(nutritions.model_dump_json()),
     )
-    # Persist new meal record to database
-    db.add(db_meal)
-    db.commit()
-    db.refresh(db_meal)
-    return db_meal
+    async with AsyncSession(engine) as session:
+        # Add meal to database
+        session.add(db_meal)
+        await session.commit()
+        await session.refresh(db_meal)
+        return db_meal
 
 
 # Function to delete a specific meal for a user by meal and user IDs
-# It makes sure that only the respected user able to delete
-
-
-def delete_user_meal(
-    db: Session,
-    user_id: int,
-    meal_id: int,
+async def delete_user_meal(
+    user_id: UUID,
+    meal_id: UUID,
 ) -> Optional[models.Meal]:
-    # Find meal by ID and user ID
-    db_meal = (
-        db.query(models.Meal)
-        .filter(
+    async with AsyncSession(engine) as session:
+        # Find meal by ID and user ID
+        q = select(models.Meal).where(
             models.Meal.id == meal_id,
             models.Meal.user_id == user_id,
         )
-        .first()
-    )
-    # Remove meal from database if found
-    if db_meal:
-        db.delete(db_meal)
-        db.commit()
+        result = await session.execute(q)
+        db_meal = result.scalars().first()
+        # Delete meal if found
+        if db_meal:
+            await session.delete(db_meal)
+            await session.commit()
+
         return db_meal
-    return None
 
 
 # Function to add a new weight entry for a user
-def create_user_weight(
-    db: Session, weight: schemas.WeightsCreate, user_id: int
+async def create_user_weight(
+    weight: schemas.WeightsCreate,
+    user_id: UUID,
 ) -> models.Weights:
     # Create weight record linked to user with given ID
-    db_weight = models.Weights(**weight.model_dump(), user_id=user_id)
-    # Save weight record to database
-    db.add(db_weight)
-    db.commit()
-    db.refresh(db_weight)
-    return db_weight
+    async with AsyncSession(engine) as session:
+        db_weight = models.Weights(
+            **weight.model_dump(),
+            user_id=user_id,
+        )
+        # Add weight to database
+        session.add(db_weight)
+        await session.commit()
+        await session.refresh(db_weight)
+        return db_weight
 
 
 # Function to fetch paginated weight entries for a specific user
-def get_user_weights(
-    db: Session,
-    user_id: int,
+async def get_user_weights(
+    user_id: UUID,
     skip: int = 0,
     limit: int = 100,
 ) -> List[models.Weights]:
     # Query for weights linked to a user ID with pagination settings
-    return (
-        db.query(models.Weights)
-        .filter(models.Weights.user_id == user_id)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    async with AsyncSession(engine) as session:
+        q = select(models.Weights).where(models.Weights.user_id == user_id)
+        result = await session.execute(q)
+        weights = result.scalars().all()
+        return weights
 
 
 # Function to remove a specific weight entry for a user by weight and user IDs
-# It makes sure that only the respected user able to delete
-def delete_user_weight(
-    db: Session, user_id: int, weight_id: int
+async def delete_user_weight(
+    user_id: UUID,
+    weight_id: UUID,
 ) -> Optional[models.Weights]:
     # Locate specific weight entry by IDs
-    db_weight = (
-        db.query(models.Weights)
-        .filter(
+    async with AsyncSession(engine) as session:
+        q = select(models.Weights).where(
             models.Weights.id == weight_id,
             models.Weights.user_id == user_id,
         )
-        .first()
-    )
-    # If found, delete the weight entry from the database
-    if db_weight:
-        db.delete(db_weight)
-        db.commit()
+        result = await session.execute(q)
+        db_weight = result.scalars().first()
+        # Delete weight if found
+        if db_weight:
+            await session.delete(db_weight)
+            await session.commit()
         return db_weight
-    return None
