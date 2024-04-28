@@ -24,7 +24,7 @@ export const SaveMealModel = ({
   const ref = useRef<HTMLDialogElement>(null);
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/meals`,
-    addMeal
+    addMeal,
   );
 
   /**
@@ -50,7 +50,7 @@ export const SaveMealModel = ({
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { date, time, ingredients } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as MealForm;
 
     if (!validateForm({ date, time, ingredients })) {
@@ -166,7 +166,7 @@ const MealResultsList = ({ results }: { results: SearchResult[] }) => {
 const MealForm = () => {
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/meals/search`,
-    search
+    search,
   );
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 

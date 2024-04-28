@@ -10,7 +10,7 @@ export const MealEntry = ({ meal_entry }: { meal_entry: Meal }) => {
   const [expanded, setExpanded] = useState(false);
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/meals/${decodeURIComponent(meal_entry.id.toString())}`,
-    deleteMeal
+    deleteMeal,
   );
   const { name, date, ingredients, nutritions } = meal_entry;
 

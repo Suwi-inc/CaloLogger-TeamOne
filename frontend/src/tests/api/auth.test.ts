@@ -29,7 +29,9 @@ describe("signIn Function", () => {
       ok: false,
     });
 
-    await expect(signIn("/login", { arg: invalidFormData })).rejects.toThrow("Invalid credentials");
+    await expect(signIn("/login", { arg: invalidFormData })).rejects.toThrow(
+      "Invalid credentials",
+    );
   });
 });
 
@@ -60,6 +62,8 @@ describe("signUp Function", () => {
       ok: false,
     });
 
-    await expect(signUp("/signup", { arg: invalidFormData })).rejects.toThrow("Invalid credentials");
+    await expect(signUp("/signup", { arg: invalidFormData })).rejects.toThrow(
+      "Invalid credentials",
+    );
   });
 });

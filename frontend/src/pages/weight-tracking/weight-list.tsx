@@ -8,7 +8,7 @@ import useSWR from "swr";
 const WeightItem = ({ weight_entry }: { weight_entry: Weight }) => {
   const { id, date, weight } = weight_entry;
   const deleteURL = new URL(
-    `${BACKEND_URL}/weights/${decodeURIComponent(id.toString())}`
+    `${BACKEND_URL}/weights/${decodeURIComponent(id.toString())}`,
   ).toString();
   const { trigger, isMutating } = useSWRMutation(deleteURL, deleteWeight);
 
@@ -54,7 +54,7 @@ const WeightItem = ({ weight_entry }: { weight_entry: Weight }) => {
 const WeightList = () => {
   const { data, isLoading, error } = useSWR<Weight[]>(
     `${BACKEND_URL}/weights`,
-    getWeights
+    getWeights,
   );
 
   if (isLoading) {

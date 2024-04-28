@@ -6,7 +6,7 @@ describe("Container", () => {
     const { getByText } = render(
       <Container>
         <p>Hello World</p>
-      </Container>
+      </Container>,
     );
 
     expect(getByText("Hello World")).toBeInTheDocument();

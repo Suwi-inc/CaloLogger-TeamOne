@@ -20,7 +20,7 @@ describe("MealChart", () => {
     global.fetch = vi.fn().mockRejectedValue(new Error("Failed to fetch data"));
     render(<MealChart />);
     expect(
-      await screen.findByText("Error: Failed to fetch data")
+      await screen.findByText("Error: Failed to fetch data"),
     ).toBeInTheDocument();
   });
 
@@ -32,7 +32,7 @@ describe("MealChart", () => {
   it("renders the chart correctly when data is available", async () => {
     render(<MealChart />);
     expect(await screen.findByText("Meal Calories Chart")).toBeInstanceOf(
-      HTMLHeadingElement
+      HTMLHeadingElement,
     );
     expect(document.getElementsByTagName("canvas")[0]).toBeInTheDocument();
   });

@@ -18,7 +18,7 @@ describe("WeightList", () => {
     global.fetch = vi.fn().mockRejectedValue(new Error("Failed to fetch data"));
     render(<WeightItem />);
     expect(
-      await screen.findByText("Error: Failed to fetch data")
+      await screen.findByText("Error: Failed to fetch data"),
     ).toBeInTheDocument();
   });
 
@@ -26,7 +26,7 @@ describe("WeightList", () => {
     render(<WeightItem />);
     // Check if the loading message is rendered and is an instance of HTMLParagraphElement
     expect(await screen.findByText("Loading...")).toBeInstanceOf(
-      HTMLParagraphElement
+      HTMLParagraphElement,
     );
   });
 
@@ -35,9 +35,9 @@ describe("WeightList", () => {
     expect(
       await screen.findByText(
         `${getDateMedium(MOCK_WEIGHT_RESPONSE[0].date)} at ${getTimeShort(
-          MOCK_WEIGHT_RESPONSE[0].date
-        )}`
-      )
+          MOCK_WEIGHT_RESPONSE[0].date,
+        )}`,
+      ),
     ).toBeInstanceOf(HTMLParagraphElement);
   });
 });

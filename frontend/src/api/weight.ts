@@ -34,7 +34,7 @@ export const getWeights = async (url: string) => {
  */
 export const addWeight = async (
   url: string,
-  { arg }: { arg: AddWeightRequestArgs }
+  { arg }: { arg: AddWeightRequestArgs },
 ) => {
   const token = localStorage.getItem("token");
   const response = await fetch(url, {

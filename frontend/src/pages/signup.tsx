@@ -14,7 +14,7 @@ const SignUp = () => {
   const token = useLogin();
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/signup`,
-    signUpRequest
+    signUpRequest,
   );
 
   if (token) {
@@ -54,7 +54,7 @@ const SignUp = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { username, password, confirmPassword } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as FormData;
 
     try {

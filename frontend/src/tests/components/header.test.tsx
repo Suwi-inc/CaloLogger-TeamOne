@@ -9,7 +9,7 @@ describe("NavItem", () => {
     const { getByText } = render(
       <BrowserRouter>
         <NavItem name={name} path={path} />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
     expect(getByText(name)).toBeInTheDocument();
   });
@@ -21,7 +21,7 @@ it("renders a link with the correct path", () => {
   const { getByText } = render(
     <BrowserRouter>
       <NavItem name={name} path={path} />
-    </BrowserRouter>
+    </BrowserRouter>,
   );
   expect(getByText(name)).toHaveAttribute("href", path);
 });
@@ -31,7 +31,7 @@ describe("NavList", () => {
     const { getByText } = render(
       <BrowserRouter>
         <NavList />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
     expect(getByText("Dashboard")).toBeInTheDocument();
     expect(getByText("Meal Tracking")).toBeInTheDocument();
@@ -42,7 +42,7 @@ describe("NavList", () => {
     render(
       <BrowserRouter>
         <NavList />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
     const list = screen.getByRole("list");
     const { getAllByRole } = within(list);
