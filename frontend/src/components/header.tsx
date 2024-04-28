@@ -3,12 +3,21 @@ import useLogin from "../hooks/useLogin";
 import Container from "./container";
 import Logout from "./Logout";
 
+/**
+ * Represents a navigation item in the header.
+ * @param name - The name of the navigation item.
+ * @param path - The path to navigate to when the item is clicked.
+ */
 const NavItem = ({ name, path }: { name: string; path: string }) => (
   <li className="text-gray-600 hover:text-black transition duration-200">
     <Link to={path}>{name}</Link>
   </li>
 );
 
+/**
+ * Renders a navigation list component.
+ * @returns The rendered navigation list component.
+ */
 const NavList = () => {
   const list = [
     { name: "Dashboard", path: "/" },
@@ -26,6 +35,10 @@ const NavList = () => {
   );
 };
 
+/**
+ * Renders the header component.
+ * @returns The header component.
+ */
 const Header = () => {
   const token = useLogin();
 

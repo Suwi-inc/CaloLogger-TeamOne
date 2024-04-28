@@ -24,10 +24,15 @@ export const SaveMealModel = ({
   const ref = useRef<HTMLDialogElement>(null);
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/meals`,
-    addMeal
+    addMeal,
   );
 
-  const validateForm = ({ date, time, ingredients }: MealForm) => {
+  /**
+   * Validates the meal form.
+   * @param {MealForm} form - The meal form object containing the date, time, and ingredients.
+   * @returns {boolean} - Returns true if the form is valid, otherwise false.
+   */
+  const validateForm = ({ date, time, ingredients }: MealForm): boolean => {
     if (!date || !time || !ingredients) {
       alert("Please fill all fields");
       return false;
@@ -35,12 +40,17 @@ export const SaveMealModel = ({
     return true;
   };
 
+  /**
+   * Handles the form submission event.
+   * 
+   * @param e - The form submission event.
+   */
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { date, time, ingredients } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as MealForm;
 
     if (!validateForm({ date, time, ingredients })) {
@@ -156,7 +166,7 @@ const MealResultsList = ({ results }: { results: SearchResult[] }) => {
 const MealForm = () => {
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/meals/search`,
-    search
+    search,
   );
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 

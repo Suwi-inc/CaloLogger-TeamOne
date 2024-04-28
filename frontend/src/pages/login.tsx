@@ -10,19 +10,24 @@ const Login = () => {
 
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/login`,
-    signIn
+    signIn,
   );
 
   if (token) {
     return <Navigate to="/" />;
   }
 
+  /**
+   * Handles the form submission event.
+   * 
+   * @param e - The form submission event.
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { username, password } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as FormData;
 
     try {

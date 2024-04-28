@@ -12,6 +12,9 @@ describe("AddMealModal", () => {
   };
   beforeEach(() => {
     React.useRef = vi.fn().mockReturnValue(mockRef);
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue({}),
+    });
   });
 
   it("renders the modal correctly", () => {
@@ -20,7 +23,7 @@ describe("AddMealModal", () => {
         openModal={true}
         setShowModal={setShowModal}
         meal_entry={mockSearchResult}
-      />
+      />,
     );
 
     expect(screen.getByText("Ingredients")).toBeInTheDocument();
@@ -36,7 +39,7 @@ describe("AddMealModal", () => {
         openModal={true}
         setShowModal={setShowModal}
         meal_entry={mockSearchResult}
-      />
+      />,
     );
 
     const saveButton = screen.getByRole("button", { name: "Save" });
@@ -58,11 +61,11 @@ describe("AddMealModal", () => {
         openModal={true}
         setShowModal={setShowModal}
         meal_entry={mockSearchResult}
-      />
+      />,
     );
 
     const ingredientsInput = document.getElementById(
-      "ingredients"
+      "ingredients",
     ) as HTMLTextAreaElement;
     const dateInput = document.getElementById("date") as HTMLInputElement;
     const timeInput = document.getElementById("time") as HTMLInputElement;

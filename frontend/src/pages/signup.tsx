@@ -14,13 +14,20 @@ const SignUp = () => {
   const token = useLogin();
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/signup`,
-    signUpRequest
+    signUpRequest,
   );
 
   if (token) {
     return <Navigate to="/" />;
   }
 
+  /**
+   * Validates the form data.
+   * @param data - The form data to be validated.
+   * @returns True if the form data is valid, otherwise throws an error.
+   * @throws {Error} If the passwords do not match, the password is less than 4 characters long,
+   * or the username is less than 3 characters long.
+   */
   const validateForm = (data: FormData) => {
     if (data.password !== data.confirmPassword) {
       throw new Error("Passwords do not match");
@@ -37,12 +44,17 @@ const SignUp = () => {
     return true;
   };
 
+  /**
+   * Handles the form submission for the signup page.
+   *
+   * @param e - The form event.
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { username, password, confirmPassword } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as FormData;
 
     try {

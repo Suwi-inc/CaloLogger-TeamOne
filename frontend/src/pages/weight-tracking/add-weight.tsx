@@ -20,10 +20,15 @@ const AddWeightModal = ({
   const ref = useRef<HTMLDialogElement>(null);
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/weights`,
-    addWeight
+    addWeight,
   );
 
-  const validateForm = ({ weight, date, time }: WeigthForm) => {
+  /**
+   * Validates the weight form.
+   * @param {WeigthForm} form - The weight form object containing weight, date, and time.
+   * @returns {boolean} - Returns true if the form is valid, false otherwise.
+   */
+  const validateForm = ({ weight, date, time }: WeigthForm): boolean => {
     if (!weight || !date || !time) {
       alert("Please fill all fields");
       return false;
@@ -37,12 +42,17 @@ const AddWeightModal = ({
     return true;
   };
 
+  /**
+   * Handles the form submission event.
+   * 
+   * @param e - The form submission event.
+   */
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { weight, date, time } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as WeigthForm;
 
     if (!validateForm({ weight, date, time })) {
