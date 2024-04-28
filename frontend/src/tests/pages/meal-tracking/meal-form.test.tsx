@@ -12,6 +12,9 @@ describe("AddMealModal", () => {
   };
   beforeEach(() => {
     React.useRef = vi.fn().mockReturnValue(mockRef);
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue({}),
+    });
   });
 
   it("renders the modal correctly", () => {
