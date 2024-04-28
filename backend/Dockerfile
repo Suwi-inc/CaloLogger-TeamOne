@@ -15,10 +15,19 @@ RUN poetry install --without dev --no-root
 
 FROM python:3.11-slim-buster AS runtime
 
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
+ARG USERNAME=calologger
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 
-USER nonroot
+# Create the user
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    #
+    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
 WORKDIR /code
 
