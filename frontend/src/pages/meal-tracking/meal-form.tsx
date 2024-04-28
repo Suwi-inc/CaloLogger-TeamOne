@@ -83,6 +83,11 @@ export const SaveMealModel = ({
             <div
                 className="flex flex-col justify-end p-5"
                 onClick={(e) => e.stopPropagation()}
+                onKeyUp={(e) => {
+                    if (e.key === "Escape") {
+                        setShowModal(false);
+                    }
+                }}
             >
                 <h3 className="text-3xl font-bold mb-5 text-center">
                     Save Meal
