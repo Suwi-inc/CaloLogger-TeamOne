@@ -1,4 +1,4 @@
-FROM python:3.11-buster as builder
+FROM python:3.11-buster AS builder
 
 RUN pip install poetry==1.7.1
 
@@ -13,7 +13,7 @@ RUN touch README.md
 
 RUN poetry install --without dev --no-root
 
-FROM python:3.11-slim-buster as runtime
+FROM python:3.11-slim-buster AS runtime
 
 WORKDIR /code
 
