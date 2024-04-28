@@ -88,7 +88,7 @@ describe("Weights API Functions", () => {
       });
 
       await expect(
-        addWeight(url, { arg: mockAddWeightRequestArgs })
+        addWeight(url, { arg: mockAddWeightRequestArgs }),
       ).rejects.toThrow("Failed to add weight");
     });
   });
@@ -115,7 +115,7 @@ describe("Weights API Functions", () => {
       });
 
       await expect(deleteWeight(url)).rejects.toThrow(
-        "Failed to delete weight"
+        "Failed to delete weight",
       );
     });
   });

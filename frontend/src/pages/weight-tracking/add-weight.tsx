@@ -20,7 +20,7 @@ const AddWeightModal = ({
   const ref = useRef<HTMLDialogElement>(null);
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/weights`,
-    addWeight
+    addWeight,
   );
 
   const validateForm = ({ weight, date, time }: WeigthForm) => {
@@ -42,7 +42,7 @@ const AddWeightModal = ({
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { weight, date, time } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as WeigthForm;
 
     if (!validateForm({ weight, date, time })) {

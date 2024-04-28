@@ -10,7 +10,7 @@ const Login = () => {
 
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/login`,
-    signIn
+    signIn,
   );
 
   if (token) {
@@ -22,7 +22,7 @@ const Login = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const { username, password } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as FormData;
 
     try {

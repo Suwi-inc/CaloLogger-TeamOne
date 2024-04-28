@@ -16,7 +16,7 @@ describe("SignUp Component", () => {
     render(
       <BrowserRouter>
         <SignUp />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
 
     // Ensure redirection happens
@@ -61,7 +61,7 @@ describe("SignUp Component", () => {
 
     // Ensure error message is displayed
     expect(global.alert).toBeCalledWith(
-      "Password must be at least 4 characters long"
+      "Password must be at least 4 characters long",
     );
   });
 
@@ -84,32 +84,32 @@ describe("SignUp Component", () => {
 
     // Ensure error message is displayed
     expect(global.alert).toBeCalledWith(
-      "Full name must be at least 3 characters long"
+      "Full name must be at least 3 characters long",
     );
   });
 
-//   it("submits form data and redirects to login page on successful signup", async () => {
-//     render(<SignUp />);
+  //   it("submits form data and redirects to login page on successful signup", async () => {
+  //     render(<SignUp />);
 
-//     // Fill out the form with valid data
-//     fireEvent.change(screen.getByLabelText("Username"), {
-//       target: { value: "testUser" },
-//     });
-//     fireEvent.change(screen.getByLabelText("Password"), {
-//       target: { value: "password" },
-//     });
-//     fireEvent.change(screen.getByLabelText("Confirm Password"), {
-//       target: { value: "password" },
-//     });
+  //     // Fill out the form with valid data
+  //     fireEvent.change(screen.getByLabelText("Username"), {
+  //       target: { value: "testUser" },
+  //     });
+  //     fireEvent.change(screen.getByLabelText("Password"), {
+  //       target: { value: "password" },
+  //     });
+  //     fireEvent.change(screen.getByLabelText("Confirm Password"), {
+  //       target: { value: "password" },
+  //     });
 
-//     // Mocking the trigger function returned by useSWRMutation
-//     global.fetc = vi.fn().mockResolvedValue({ ok: true });
+  //     // Mocking the trigger function returned by useSWRMutation
+  //     global.fetc = vi.fn().mockResolvedValue({ ok: true });
 
-//     // Submit the form
-//     fireEvent.click(screen.getByText("Sign up"));
+  //     // Submit the form
+  //     fireEvent.click(screen.getByText("Sign up"));
 
-//     // Ensure redirection happens after successful signup
-//     console.log(window.location.pathname);
-//     expect(global.alert).toBeCalledWith("hi");
-//   });
+  //     // Ensure redirection happens after successful signup
+  //     console.log(window.location.pathname);
+  //     expect(global.alert).toBeCalledWith("hi");
+  //   });
 });

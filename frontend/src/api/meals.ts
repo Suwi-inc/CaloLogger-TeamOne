@@ -2,7 +2,7 @@ import { SearchResult, Meal, CreateMeal } from "../types";
 
 export const search = async (
   url: string,
-  { arg }: { arg: { query: string } }
+  { arg }: { arg: { query: string } },
 ) => {
   const token = localStorage.getItem("token");
   const fullURL = new URL(url);
