@@ -20,7 +20,6 @@ describe("AddMealModal", () => {
     it("renders the modal correctly", () => {
         render(
             <SaveMealModel
-                openModal={true}
                 setShowModal={setShowModal}
                 meal_entry={mockSearchResult}
             />
@@ -36,7 +35,6 @@ describe("AddMealModal", () => {
 
         render(
             <SaveMealModel
-                openModal={true}
                 setShowModal={setShowModal}
                 meal_entry={mockSearchResult}
             />
