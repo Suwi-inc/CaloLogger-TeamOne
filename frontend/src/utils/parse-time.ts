@@ -4,14 +4,14 @@
  * @returns The short time format string.
  */
 export const getTimeShort = (timeStamp: string): string => {
-  const date = new Date(timeStamp);
-  if (isNaN(date.getTime())) {
-    return "";
-  }
-  return new Intl.DateTimeFormat("en-US", {
-    timeStyle: "short",
-    hourCycle: "h12",
-  }).format(date);
+    const date = new Date(timeStamp);
+    if (isNaN(date.getTime())) {
+        return "";
+    }
+    return new Intl.DateTimeFormat("en-US", {
+        timeStyle: "short",
+        hourCycle: "h12",
+    }).format(date);
 };
 
 /**
@@ -20,11 +20,13 @@ export const getTimeShort = (timeStamp: string): string => {
  * @returns The formatted date string in medium format (e.g., "Jan 1, 2022").
  */
 export const getDateMedium = (timeStamp: string): string => {
-  const date = new Date(timeStamp);
-  if (isNaN(date.getTime())) {
-    return "";
-  }
-  return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
+    const date = new Date(timeStamp);
+    if (isNaN(date.getTime())) {
+        return "";
+    }
+    return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(
+        date
+    );
 };
 
 /**
@@ -35,5 +37,5 @@ export const getDateMedium = (timeStamp: string): string => {
  * @returns The ISO string representation of the combined date and time.
  */
 export const getTimeISO = (date: string, time: string): string => {
-  return new Date(`${date}T${time}Z`).toISOString();
+    return new Date(`${date}T${time}Z`).toISOString();
 };
