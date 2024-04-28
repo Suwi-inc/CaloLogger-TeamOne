@@ -46,7 +46,7 @@ class JWTBearer(HTTPBearer):
             raise HTTPException(status_code=e.status_code, detail=e.detail)
 
 
-def get_user_id(request: Request) -> int:
+def get_user_id(request: Request) -> str:
     """
     Extracts and returns the user ID from the JWT token in the request headers.
     """

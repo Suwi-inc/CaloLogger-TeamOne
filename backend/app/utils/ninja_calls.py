@@ -1,4 +1,4 @@
-import requests
+import httpx
 from fastapi import HTTPException
 from typing import List, Dict
 from app.schemas import MealNutritions, Recipe
@@ -8,31 +8,37 @@ API_BASE_URL = "https://api.calorieninjas.com/v1/"
 HEADERS = {"origin": "https://calorieninjas.com"}
 
 
-def fetch_api_data(endpoint: str, query: str) -> Dict:
+async def fetch_api_data(endpoint: str, query: str) -> Dict:
     """Helper function to fetch data from API and handle errors."""
     url = f"{API_BASE_URL}{endpoint}"
     params = {"query": query}
-    response = requests.get(url, headers=HEADERS, params=params, timeout=10)
-    if response.status_code != requests.codes.ok:
-        logger.error(f"Error: {response.status_code} {response.text}")
-        raise HTTPException(status_code=404, detail="Resource not found")
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            url,
+            headers=HEADERS,
+            params=params,
+            timeout=10,
+        )
+        if response.status_code != 200:
+            logger.error(f"Error: {response.status_code} {response.text}")
+            raise HTTPException(status_code=404, detail="Resource not found")
     return response.json()
 
 
-def get_recipes(query: str) -> List[Recipe]:
+async def get_recipes(query: str) -> List[Recipe]:
     """Fetch recipes based on a query."""
-    data = fetch_api_data("recipe", query)
+    data = await fetch_api_data("recipe", query)
     return data
 
 
-def get_nutritions(query: str) -> MealNutritions:
+async def get_nutritions(query: str) -> MealNutritions:
     """Fetch nutritional information based on a query and compute totals."""
-    data = fetch_api_data("nutrition", query)
+    data = await fetch_api_data("nutrition", query)
     nutrition_list = data["items"]
 
-    # Calculate total nutritional values
+    # Calculate total nutritional values using list comprehension and sum()
     nutrition_totals = [
-        sum(item[nutr] for item in nutrition_list)
+        sum(map(lambda item: item[nutr], nutrition_list))
         for nutr in [
             "calories",
             "fat_total_g",

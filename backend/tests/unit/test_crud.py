@@ -1,28 +1,22 @@
 import pytest
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 
 from app import crud
-from app.schemas import UserCreate, MealCreate, WeightsCreate, MealNutritions
-from app.database import Base, engine
-
-
-# Fixture to create and drop temporary database tables for testing
-@pytest.fixture(scope="function")
-def db() -> Session:
-    Base.metadata.create_all(bind=engine)
-    session = Session(bind=engine)
-    yield session
-    session.close()
-    Base.metadata.drop_all(bind=engine)
+from app.schemas import (
+    UserCreate,
+    MealCreate,
+    WeightsCreate,
+    MealNutritions,
+    User,
+)
 
 
 # Fixture to create a user for reusability in multiple tests
 @pytest.fixture(scope="function")
-def test_user(db: Session) -> UserCreate:
+async def test_user() -> User:
     user_data = UserCreate(username="test_user", password="test_password")
-    return crud.create_user(db, user_data)
+    return await crud.create_user(user_data)
 
 
 # Test creation of access token
@@ -33,7 +27,7 @@ def test_create_access_token():
 
 
 # Test verification of a valid token
-def test_verify_access_token_valid_token(db: Session):
+def test_verify_access_token_valid_token():
     data = {"sub": "user_id"}
     token = crud.create_access_token(data)
     decoded_token = crud.verify_access_token(token)
@@ -41,7 +35,7 @@ def test_verify_access_token_valid_token(db: Session):
 
 
 # Test verification of an expired token
-def test_verify_access_token_expired_token(db: Session):
+def test_verify_access_token_expired_token():
     data = {"sub": "user_id"}
     expired_token = crud.create_access_token(
         data,
@@ -53,26 +47,28 @@ def test_verify_access_token_expired_token(db: Session):
 
 
 # Adjusted test for creating a user with invalid input
-def test_create_user(db: Session):
-    invalid_user = UserCreate(username="test", password="password")
-    created_user = crud.create_user(db, invalid_user)
+@pytest.mark.asyncio
+async def test_create_user():
+    user_data = UserCreate(username="test", password="password")
+    created_user = await crud.create_user(user_data)
     assert created_user
 
 
 # Test creation of a weight entry with invalid (negative) weight
-def test_create_user_weight(db: Session, test_user: UserCreate):
+@pytest.mark.asyncio
+async def test_create_user_weight(test_user: UserCreate):
+    test_user = await test_user
     weight_data = WeightsCreate(weight=70.5, date=datetime.now())
-    created_weight = crud.create_user_weight(
-        db,
+    created_weight = await crud.create_user_weight(
         weight_data,
         user_id=test_user.id,
     )
     assert created_weight is not None, "Weight entry should be successful"
 
 
-def test_user_login_flow(db: Session):
-    _ = crud.create_user(
-        db,
+@pytest.mark.asyncio
+async def test_user_login_flow():
+    await crud.create_user(
         UserCreate(username="new_user", password="new_password"),
     )
     user_data = {"username": "new_user", "password": "new_password"}
@@ -86,7 +82,9 @@ def test_user_login_flow(db: Session):
     ), "Token verification should pass with correct credentials"
 
 
-def test_create_user_meal(db: Session, test_user: UserCreate):
+@pytest.mark.asyncio
+async def test_create_user_meal(test_user: UserCreate):
+    test_user = await test_user
     MealNutritions_data = MealNutritions(
         calories=500,
         fat_total_g=10,
@@ -103,16 +101,17 @@ def test_create_user_meal(db: Session, test_user: UserCreate):
     meal_data = MealCreate(
         name="test", ingredients="test ingredients", date=datetime.now()
     )
-    created_meal = crud.create_user_meal(
-        db, meal_data, MealNutritions_data, user_id=test_user.id
+    created_meal = await crud.create_user_meal(
+        meal_data, MealNutritions_data, user_id=test_user.id
     )
     assert created_meal is not None, "Meal should be successfully created"
 
 
-def test_create_meal_with_maximum_length_name(
-    db: Session,
+@pytest.mark.asyncio
+async def test_create_meal_with_maximum_length_name(
     test_user: UserCreate,
 ):
+    test_user = await test_user
     MealNutritions_data = MealNutritions(
         calories=500,
         fat_total_g=10,
@@ -132,16 +131,17 @@ def test_create_meal_with_maximum_length_name(
         ingredients="Ingredients",
         date=datetime.now(),
     )
-    created_meal = crud.create_user_meal(
-        db, meal, MealNutritions_data, user_id=test_user.id
+    created_meal = await crud.create_user_meal(
+        meal, MealNutritions_data, user_id=test_user.id
     )
     assert created_meal.name == long_name, "Should handle maximum length names"
 
 
-def test_create_meal_with_empty_ingredients(
-    db: Session,
+@pytest.mark.asyncio
+async def test_create_meal_with_empty_ingredients(
     test_user: UserCreate,
 ):
+    test_user = await test_user
     MealNutritions_data = MealNutritions(
         calories=500,
         fat_total_g=10,
@@ -160,14 +160,16 @@ def test_create_meal_with_empty_ingredients(
         ingredients="",
         date=datetime.now(),
     )
-    created_meal = crud.create_user_meal(
-        db, meal, MealNutritions_data, user_id=test_user.id
+    created_meal = await crud.create_user_meal(
+        meal, MealNutritions_data, user_id=test_user.id
     )
     assert created_meal, "Meal with empty ingredients should still be created"
 
 
-def test_meal_creation_performance(db: Session, test_user: UserCreate):
+@pytest.mark.asyncio
+async def test_meal_creation_performance(test_user: UserCreate):
     """Test the performance of creating multiple meals."""
+    test_user = await test_user
     start_time = datetime.now()
     MealNutritions_data = MealNutritions_data = MealNutritions(
         calories=500,
@@ -188,8 +190,7 @@ def test_meal_creation_performance(db: Session, test_user: UserCreate):
             ingredients="Lots of stuff",
             date=datetime.now(),
         )
-        crud.create_user_meal(
-            db,
+        await crud.create_user_meal(
             meal,
             MealNutritions_data,
             user_id=test_user.id,
