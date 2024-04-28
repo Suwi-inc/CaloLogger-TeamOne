@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { SearchResult } from "../../types";
 import { search, addMeal } from "../../api/meals";
 import { BACKEND_URL } from "../../constants";
@@ -11,7 +11,7 @@ type MealForm = {
   ingredients: string;
 };
 
-const SaveMealModel = ({
+export const SaveMealModel = ({
   meal_entry,
   openModal,
   setShowModal,
@@ -27,15 +27,7 @@ const SaveMealModel = ({
     addMeal
   );
 
-  useEffect(() => {
-    if (openModal) {
-      ref.current?.showModal();
-    } else {
-      ref.current?.close();
-    }
-  }, [openModal]);
-
-  const validateForm = ({ date, time, ingredients }: any) => {
+  const validateForm = ({ date, time, ingredients }: MealForm) => {
     if (!date || !time || !ingredients) {
       alert("Please fill all fields");
       return false;
@@ -68,6 +60,7 @@ const SaveMealModel = ({
   return (
     <dialog
       ref={ref}
+      open={openModal}
       onCancel={() => setShowModal(false)}
       onClick={() => setShowModal(false)}
       className="p-5 border border-gray-200 rounded-md"
@@ -95,12 +88,14 @@ const SaveMealModel = ({
           <div className="flex gap-2">
             <input
               type="date"
+              id="date"
               name="date"
               className="p-5 border border-gray-200 rounded-md"
               placeholder="Date"
             />
             <input
               type="time"
+              id="time"
               name="time"
               className="p-5 border border-gray-200 rounded-md"
               placeholder="Time"

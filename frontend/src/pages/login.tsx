@@ -28,7 +28,7 @@ const Login = () => {
     try {
       const token = await trigger({ username, password });
       localStorage.setItem("token", token);
-      window.location.reload();
+      window.location.href = "/dashboard";
     } catch (error) {
       const errorMessage = (error as Error).message;
       alert(errorMessage);
@@ -68,6 +68,7 @@ const Login = () => {
             />
           </div>
           <button
+            id="login-button"
             type="submit"
             className="w-full bg-blue-500 text-white rounded-md py-2 mt-4 disabled:opacity-50"
             disabled={isMutating}

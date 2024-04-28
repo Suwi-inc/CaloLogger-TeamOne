@@ -23,13 +23,13 @@ const AddWeightModal = ({
     addWeight
   );
 
-  const validateForm = ({ weight, date, time }: any) => {
+  const validateForm = ({ weight, date, time }: WeigthForm) => {
     if (!weight || !date || !time) {
       alert("Please fill all fields");
       return false;
     }
 
-    if (weight <= 0) {
+    if (Number(weight) <= 0) {
       alert("Weight must be greater than 0");
       return false;
     }

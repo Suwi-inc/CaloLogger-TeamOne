@@ -14,6 +14,6 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
-    complexity: ["error", 10],
+    complexity: ["error", 5],
   },
 };

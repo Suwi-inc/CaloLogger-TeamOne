@@ -6,7 +6,7 @@ import { BACKEND_URL } from "../../constants";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
-const MealEntry = ({ meal_entry }: { meal_entry: Meal }) => {
+export const MealEntry = ({ meal_entry }: { meal_entry: Meal }) => {
   const [expanded, setExpanded] = useState(false);
   const { trigger, isMutating } = useSWRMutation(
     `${BACKEND_URL}/meals/${decodeURIComponent(meal_entry.id.toString())}`,
