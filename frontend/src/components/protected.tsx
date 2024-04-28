@@ -11,9 +11,9 @@ import Loading from "./loading";
  * @returns The protected route component.
  */
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const isLoggedIn = useLogin();
-  if (isLoggedIn === undefined) return <Loading />;
-  return isLoggedIn ? children : <Navigate replace to="/login" />;
+    const isLoggedIn = useLogin();
+    if (isLoggedIn === undefined) return <Loading />;
+    return isLoggedIn ? children : <Navigate replace to="/login" />;
 };
 
 export default ProtectedRoute;

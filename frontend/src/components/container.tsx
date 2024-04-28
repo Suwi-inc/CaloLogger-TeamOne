@@ -1,5 +1,5 @@
 type Props = {
-  children: string | JSX.Element | JSX.Element[];
+    children: string | JSX.Element | JSX.Element[];
 };
 
 /**
@@ -10,7 +10,7 @@ type Props = {
  * @returns {JSX.Element} The container component.
  */
 const Container = ({ children }: Props) => {
-  return <div className="w-[60%] m-auto px-0 md:px-3">{children}</div>;
+    return <div className="w-[60%] m-auto px-0 md:px-3">{children}</div>;
 };
 
 export default Container;

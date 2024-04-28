@@ -3,7 +3,7 @@
  * @returns JSX.Element representing the loading message.
  */
 const Loading = () => {
-  return <p> Loading ... </p>;
+    return <p> Loading ... </p>;
 };
 
 export default Loading;
