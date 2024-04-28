@@ -3,9 +3,10 @@ import { SearchResult } from "../../types";
 import { search, addMeal } from "../../api/meals";
 import { BACKEND_URL } from "../../constants";
 import { getTimeISO } from "../../utils/parse-time";
+import { nanoid } from "nanoid";
 import useSWRMutation from "swr/mutation";
 
-type MealForm = {
+type MealFormType = {
     date: string;
     time: string;
     ingredients: string;
@@ -29,7 +30,11 @@ export const SaveMealModel = ({
      * @param {MealForm} form - The meal form object containing the date, time, and ingredients.
      * @returns {boolean} - Returns true if the form is valid, otherwise false.
      */
-    const validateForm = ({ date, time, ingredients }: MealForm): boolean => {
+    const validateForm = ({
+        date,
+        time,
+        ingredients,
+    }: MealFormType): boolean => {
         if (!date || !time || !ingredients) {
             alert("Please fill all fields");
             return false;
@@ -48,7 +53,7 @@ export const SaveMealModel = ({
         const formData = new FormData(form);
         const { date, time, ingredients } = Object.fromEntries(
             formData.entries()
-        ) as MealForm;
+        ) as MealFormType;
 
         if (!validateForm({ date, time, ingredients })) {
             return;
@@ -73,11 +78,6 @@ export const SaveMealModel = ({
             <div
                 className="flex flex-col justify-end p-10 w-fit bg-white rounded-md shadow-lg"
                 onClick={(e) => e.stopPropagation()}
-                onKeyUp={(e) => {
-                    if (e.key === "Escape") {
-                        setShowModal(false);
-                    }
-                }}
             >
                 <h3 className="text-3xl font-bold mb-5 text-center">
                     Save Meal
@@ -163,10 +163,7 @@ const MealResultsList = ({ results }: { results: SearchResult[] }) => {
     return (
         <div className="flex flex-col gap-5">
             {results.map((meal_entry) => (
-                <MealResultItem
-                    key={meal_entry.title}
-                    meal_entry={meal_entry}
-                />
+                <MealResultItem key={nanoid()} meal_entry={meal_entry} />
             ))}
         </div>
     );
@@ -189,7 +186,7 @@ const MealForm = () => {
             return;
         }
         const data = await trigger({ query });
-        setSearchResults(data);
+        setSearchResults(() => data);
     };
 
     return (
