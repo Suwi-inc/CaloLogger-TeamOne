@@ -23,7 +23,7 @@ const WeightTracking = () => {
                 </button>
             </div>
             <WeightList />
-            <AddWeightModal openModal={showModal} setShowModal={setShowModal} />
+            {showModal ? <AddWeightModal setShowModal={setShowModal} /> : <></>}
         </Container>
     );
 };

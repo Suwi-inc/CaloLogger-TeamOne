@@ -15,7 +15,7 @@ describe("AddWeightModal", () => {
     });
 
     it("renders the modal correctly", () => {
-        render(<AddWeightModal openModal={true} setShowModal={setShowModal} />);
+        render(<AddWeightModal setShowModal={setShowModal} />);
 
         expect(screen.getByText("Add Weight")).toBeInTheDocument();
         expect(screen.getByLabelText("Weight (KG)")).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe("AddWeightModal", () => {
     it("check for invalid form data", () => {
         window.alert = vi.fn();
 
-        render(<AddWeightModal openModal={true} setShowModal={setShowModal} />);
+        render(<AddWeightModal setShowModal={setShowModal} />);
 
         const addButton = screen.getByRole("button", { name: "Add" });
         fireEvent.click(addButton);

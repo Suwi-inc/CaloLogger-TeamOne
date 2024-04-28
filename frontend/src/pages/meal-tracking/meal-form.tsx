@@ -13,11 +13,9 @@ type MealForm = {
 
 export const SaveMealModel = ({
     meal_entry,
-    openModal,
     setShowModal,
 }: {
     meal_entry: SearchResult;
-    openModal: boolean;
     setShowModal: (showModal: boolean) => void;
 }) => {
     const { ingredients } = meal_entry;
@@ -69,16 +67,12 @@ export const SaveMealModel = ({
 
     return (
         <dialog
+            open
             ref={ref}
-            open={openModal}
             onCancel={() => setShowModal(false)}
             onClick={() => setShowModal(false)}
             className="p-5 border border-gray-200 rounded-md"
-            onKeyUp={(e) => {
-                if (e.key === "Escape") {
-                    setShowModal(false);
-                }
-            }}
+            role="dialog"
         >
             <div
                 className="flex flex-col justify-end p-5"
@@ -149,11 +143,12 @@ const MealResultItem = ({ meal_entry }: { meal_entry: SearchResult }) => {
                 <h1 className="text-lg">{title}</h1>
                 <p className="text-sm">{ingredients}</p>
             </div>
-            <SaveMealModel
-                meal_entry={meal_entry}
-                openModal={showModal}
-                setShowModal={setShowModal}
-            />
+            {showModal && (
+                <SaveMealModel
+                    meal_entry={meal_entry}
+                    setShowModal={setShowModal}
+                />
+            )}
             <button
                 className="bg-blue-500 text-sm text-white py-2 px-4 rounded-md w-fit"
                 onClick={() => setShowModal(!showModal)}

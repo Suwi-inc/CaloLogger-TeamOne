@@ -11,10 +11,8 @@ type WeigthForm = {
 };
 
 const AddWeightModal = ({
-    openModal,
     setShowModal,
 }: {
-    openModal: boolean;
     setShowModal: (showModal: boolean) => void;
 }) => {
     const ref = useRef<HTMLDialogElement>(null);
@@ -67,25 +65,17 @@ const AddWeightModal = ({
 
     return (
         <dialog
+            open
             ref={ref}
-            open={openModal}
             onCancel={() => setShowModal(false)}
             onClick={() => setShowModal(false)}
             className="p-5 border border-gray-200 rounded-md"
-            onKeyUp={(e) => {
-                if (e.key === "Escape") {
-                    setShowModal(false);
-                }
-            }}
+            role="dialog"
         >
             <div
                 className="flex flex-col justify-end p-5"
                 onClick={(e) => e.stopPropagation()}
-                onKeyUp={(e) => {
-                    if (e.key === "Escape") {
-                        setShowModal(false);
-                    }
-                }}
+                role="form-dialog"
             >
                 <h3 className="text-3xl font-bold mb-5 text-center">
                     Add Weight
