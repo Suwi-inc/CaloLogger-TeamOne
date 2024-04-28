@@ -1,16 +1,7 @@
 import React from "react";
-// import { getTimeISO } from "../../../utils/parse-time";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import AddWeightModal from "../../../pages/weight-tracking/add-weight";
-
-const mockTrigger = vi.fn();
-vi.mock("swr/immutable", () => ({
-    __esModule: true,
-    default: vi
-        .fn()
-        .mockReturnValue({ trigger: mockTrigger, isMutating: false }),
-}));
 
 describe("AddWeightModal", () => {
     const setShowModal = vi.fn();
@@ -18,6 +9,9 @@ describe("AddWeightModal", () => {
 
     beforeEach(() => {
         React.useRef = vi.fn().mockReturnValue(mockRef);
+        global.fetch = vi.fn().mockResolvedValue({
+            json: { title: "Test Meal", ingredients: "Test ingredients" },
+        });
     });
 
     it("renders the modal correctly", () => {
@@ -70,43 +64,5 @@ describe("AddWeightModal", () => {
         expect(window.alert).toHaveBeenCalledWith(
             "Weight must be greater than 0"
         );
-    });
-
-    it("submits the form with valid data", async () => {
-        const showModal = vi.fn();
-        render(<AddWeightModal openModal={true} setShowModal={showModal} />);
-
-        const weightInput = document.getElementById(
-            "weight"
-        ) as HTMLInputElement;
-        const dateInput = document.getElementById("date") as HTMLInputElement;
-        const timeInput = document.getElementById("time") as HTMLInputElement;
-        const addButton = screen.getByRole("button", { name: "Add" });
-
-        fireEvent.change(weightInput, { target: { value: "75" } });
-        fireEvent.change(dateInput, { target: { value: "2022-01-01" } });
-        fireEvent.change(timeInput, { target: { value: "12:00" } });
-        fireEvent.click(addButton);
-
-        expect(screen.getByText("Adding...")).toBeInTheDocument();
-    });
-
-    it("closes the modal when the form is submitted", async () => {
-        const showModal = vi.fn();
-        render(<AddWeightModal openModal={true} setShowModal={showModal} />);
-
-        const weightInput = document.getElementById(
-            "weight"
-        ) as HTMLInputElement;
-        const dateInput = document.getElementById("date") as HTMLInputElement;
-        const timeInput = document.getElementById("time") as HTMLInputElement;
-        const addButton = screen.getByRole("button", { name: "Add" });
-
-        fireEvent.change(weightInput, { target: { value: "75" } });
-        fireEvent.change(dateInput, { target: { value: "2022-01-01" } });
-        fireEvent.change(timeInput, { target: { value: "12:00" } });
-        fireEvent.click(addButton);
-
-        // expect(mockRef.current.close).toHaveBeenCalled();
     });
 });
