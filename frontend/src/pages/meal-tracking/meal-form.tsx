@@ -19,7 +19,6 @@ export const SaveMealModel = ({
     setShowModal: (showModal: boolean) => void;
 }) => {
     const { ingredients } = meal_entry;
-    const ref = useRef<HTMLDialogElement>(null);
     const { trigger, isMutating } = useSWRMutation(
         `${BACKEND_URL}/meals`,
         addMeal
@@ -66,16 +65,22 @@ export const SaveMealModel = ({
     };
 
     return (
-        <dialog
-            open
-            ref={ref}
-            onCancel={() => setShowModal(false)}
+        <div
             onClick={() => setShowModal(false)}
-            className="p-5 border border-gray-200 rounded-md"
+            className="p-5 border border-gray-200 flex items-center justify-center rounded-md fixed top-0 left-0 right-0 min-h-screen bg-black backdrop:bg-black bg-opacity-50 z-50"
             role="dialog"
+            aria-modal="true"
+            onKeyDown={(e) => {
+                e.preventDefault();
+                console.log(e.key);
+                if (e.key === "Escape") {
+                    setShowModal(false);
+                }
+            }}
+            tabIndex={10}
         >
             <div
-                className="flex flex-col justify-end p-5"
+                className="flex flex-col justify-end p-10 w-fit bg-white rounded-md shadow-lg"
                 onClick={(e) => e.stopPropagation()}
                 onKeyUp={(e) => {
                     if (e.key === "Escape") {
@@ -129,7 +134,7 @@ export const SaveMealModel = ({
                     </button>
                 </form>
             </div>
-        </dialog>
+        </div>
     );
 };
 

@@ -1,5 +1,4 @@
 import { getTimeISO } from "../../utils/parse-time";
-import { useRef } from "react";
 import { addWeight } from "../../api/weight";
 import { BACKEND_URL } from "../../constants";
 import useSWRMutation from "swr/mutation";
@@ -15,7 +14,6 @@ const AddWeightModal = ({
 }: {
     setShowModal: (showModal: boolean) => void;
 }) => {
-    const ref = useRef<HTMLDialogElement>(null);
     const { trigger, isMutating } = useSWRMutation(
         `${BACKEND_URL}/weights`,
         addWeight
@@ -64,16 +62,22 @@ const AddWeightModal = ({
     };
 
     return (
-        <dialog
-            open
-            ref={ref}
-            onCancel={() => setShowModal(false)}
+        <div
             onClick={() => setShowModal(false)}
-            className="p-5 border border-gray-200 rounded-md"
+            className="p-5 border border-gray-200 flex items-center justify-center rounded-md fixed top-0 left-0 right-0 min-h-screen bg-black backdrop:bg-black bg-opacity-50 z-50"
             role="dialog"
+            aria-modal="true"
+            onKeyDown={(e) => {
+                e.preventDefault();
+                console.log(e.key);
+                if (e.key === "Escape") {
+                    setShowModal(false);
+                }
+            }}
+            tabIndex={10}
         >
             <div
-                className="flex flex-col justify-end p-5"
+                className="flex flex-col justify-end p-10 bg-white rounded-md shadow-lg"
                 onClick={(e) => e.stopPropagation()}
                 role="form-dialog"
             >
@@ -125,7 +129,7 @@ const AddWeightModal = ({
                     </button>
                 </form>
             </div>
-        </dialog>
+        </div>
     );
 };
 
