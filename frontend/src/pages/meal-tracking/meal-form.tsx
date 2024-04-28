@@ -68,16 +68,7 @@ export const SaveMealModel = ({
         <div
             onClick={() => setShowModal(false)}
             className="p-5 border border-gray-200 flex items-center justify-center rounded-md fixed top-0 left-0 right-0 min-h-screen bg-black backdrop:bg-black bg-opacity-50 z-50"
-            role="dialog"
             aria-modal="true"
-            onKeyDown={(e) => {
-                e.preventDefault();
-                console.log(e.key);
-                if (e.key === "Escape") {
-                    setShowModal(false);
-                }
-            }}
-            tabIndex={10}
         >
             <div
                 className="flex flex-col justify-end p-10 w-fit bg-white rounded-md shadow-lg"
@@ -193,7 +184,7 @@ const MealForm = () => {
         const form = e.currentTarget;
         const formData = new FormData(form);
         const query = formData.get("query") as string;
-        if (!query || !query.trim()) {
+        if (!query.trim()) {
             alert("Please enter a meal name");
             return;
         }
