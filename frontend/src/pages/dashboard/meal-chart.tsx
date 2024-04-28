@@ -19,7 +19,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const MealChart = () => {
@@ -33,14 +33,17 @@ const MealChart = () => {
   if (error || !meals) return <p>Error: {error.message}</p>;
 
   // Grouping meals by date and calculating total calories for each date
-  const groupedData = meals.reduce((acc, meal) => {
-    const date = new Date(meal.date).toLocaleDateString();
-    if (!acc[date]) {
-      acc[date] = 0;
-    }
-    acc[date] += meal.nutritions.calories;
-    return acc;
-  }, {} as { [key: string]: number });
+  const groupedData = meals.reduce(
+    (acc, meal) => {
+      const date = new Date(meal.date).toLocaleDateString();
+      if (!acc[date]) {
+        acc[date] = 0;
+      }
+      acc[date] += meal.nutritions.calories;
+      return acc;
+    },
+    {} as { [key: string]: number },
+  );
 
   // Extracting dates and total calories from the grouped data
   const dates = Object.keys(groupedData);

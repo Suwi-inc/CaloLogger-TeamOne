@@ -21,7 +21,7 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const WeightChart = () => {
@@ -40,7 +40,7 @@ const WeightChart = () => {
   }
 
   const labels = weights.map((entry) =>
-    new Date(entry.date).toLocaleDateString()
+    new Date(entry.date).toLocaleDateString(),
   );
   const values = weights.map((entry) => entry.weight);
 

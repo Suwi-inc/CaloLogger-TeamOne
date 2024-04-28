@@ -23,7 +23,7 @@ describe("AddMealModal", () => {
         openModal={true}
         setShowModal={setShowModal}
         meal_entry={mockSearchResult}
-      />
+      />,
     );
 
     expect(screen.getByText("Ingredients")).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe("AddMealModal", () => {
         openModal={true}
         setShowModal={setShowModal}
         meal_entry={mockSearchResult}
-      />
+      />,
     );
 
     const saveButton = screen.getByRole("button", { name: "Save" });
@@ -61,11 +61,11 @@ describe("AddMealModal", () => {
         openModal={true}
         setShowModal={setShowModal}
         meal_entry={mockSearchResult}
-      />
+      />,
     );
 
     const ingredientsInput = document.getElementById(
-      "ingredients"
+      "ingredients",
     ) as HTMLTextAreaElement;
     const dateInput = document.getElementById("date") as HTMLInputElement;
     const timeInput = document.getElementById("time") as HTMLInputElement;

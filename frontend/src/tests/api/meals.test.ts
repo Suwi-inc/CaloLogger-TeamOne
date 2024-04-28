@@ -51,7 +51,7 @@ describe("Meals API Functions", () => {
       });
 
       await expect(search(url, { arg: { query } })).rejects.toThrow(
-        "Failed to search meals"
+        "Failed to search meals",
       );
     });
   });
@@ -116,7 +116,7 @@ describe("Meals API Functions", () => {
       });
 
       await expect(addMeal(url, { arg: mockCreateMeal })).rejects.toThrow(
-        "Failed to add meal"
+        "Failed to add meal",
       );
     });
   });

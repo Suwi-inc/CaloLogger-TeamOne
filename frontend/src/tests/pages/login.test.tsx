@@ -16,9 +16,9 @@ describe("Login Component", () => {
     render(
       <BrowserRouter>
         <Login />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
-    
+
     // Ensure redirection happens
     expect(window.location.pathname).toBe("/");
   });
@@ -27,7 +27,7 @@ describe("Login Component", () => {
     render(
       <BrowserRouter>
         <Login />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
 
     // Check if the login form is rendered
