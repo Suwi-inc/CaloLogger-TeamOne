@@ -1,6 +1,6 @@
 export type FormData = {
-  username: string;
-  password: string;
+    username: string;
+    password: string;
 };
 
 /**
@@ -11,20 +11,20 @@ export type FormData = {
  * @throws Error if the sign-in request fails or the credentials are invalid.
  */
 export const signIn = async (url: string, { arg }: { arg: FormData }) => {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(arg),
-  });
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(arg),
+    });
 
-  if (!response.ok) {
-    throw new Error("Invalid credentials");
-  }
+    if (!response.ok) {
+        throw new Error("Invalid credentials");
+    }
 
-  const data = await response.json();
-  return data.access_token as string;
+    const data = await response.json();
+    return data.access_token as string;
 };
 
 /**
@@ -35,17 +35,17 @@ export const signIn = async (url: string, { arg }: { arg: FormData }) => {
  * @throws An error with the message "Invalid credentials" if the sign-up request fails.
  */
 export const signUp = async (url: string, { arg }: { arg: FormData }) => {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(arg),
-  });
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(arg),
+    });
 
-  if (!response.ok) {
-    throw new Error("Invalid credentials");
-  }
+    if (!response.ok) {
+        throw new Error("Invalid credentials");
+    }
 
-  return true;
+    return true;
 };
