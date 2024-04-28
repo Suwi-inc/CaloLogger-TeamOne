@@ -10,9 +10,9 @@ HEADERS = {"origin": "https://calorieninjas.com"}
 
 def fetch_api_data(endpoint: str, query: str) -> Dict:
     """Helper function to fetch data from API and handle errors."""
-    response = requests.get(
-        f"{API_BASE_URL}{endpoint}?query={query}", headers=HEADERS, timeout=10
-    )
+    url = f"{API_BASE_URL}{endpoint}"
+    params = {"query": query}
+    response = requests.get(url, headers=HEADERS, params=params, timeout=10)
     if response.status_code != requests.codes.ok:
         logger.error(f"Error: {response.status_code} {response.text}")
         raise HTTPException(status_code=404, detail="Resource not found")
