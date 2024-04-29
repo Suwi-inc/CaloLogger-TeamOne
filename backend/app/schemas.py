@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -15,7 +16,7 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -33,9 +34,9 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    id: int
+    id: UUID
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -52,7 +53,7 @@ class MealNutritions(BaseModel):
     fiber_g: float
     sugar_g: float
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -67,11 +68,11 @@ class MealCreate(MealBase):
 
 
 class Meal(MealBase):
-    id: int
-    user_id: int
+    id: UUID
+    user_id: UUID
     nutritions: MealNutritions
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -79,7 +80,7 @@ class Recipe(BaseModel):
     title: str
     ingredients: str
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -94,8 +95,8 @@ class WeightsCreate(WeightsBase):
 
 
 class Weights(WeightsBase):
-    id: int
-    user_id: int
+    id: UUID
+    user_id: UUID
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

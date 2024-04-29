@@ -1,48 +1,36 @@
 from datetime import UTC, datetime
+from typing import Dict
+from uuid import UUID, uuid4
 
-from sqlalchemy import (
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    JSON,
-)
-from sqlalchemy.orm import relationship
-
-from app.database import Base
+from sqlmodel import SQLModel, Relationship, Field
+from sqlalchemy import Column, JSON
 
 
-class User(Base):
-    __tablename__ = "users"
+class User(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    username: str
+    hashed_password: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-
-    meals = relationship("Meal", back_populates="user")
-
-
-class Meal(Base):
-    __tablename__ = "meals"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    ingredients = Column(String)
-    nutritions = Column(JSON)
-    date = Column(DateTime, default=datetime.now(UTC))
-
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="meals")
+    meals: list["Meal"] = Relationship(back_populates="user")
+    weights: list["Weights"] = Relationship(back_populates="user")
 
 
-class Weights(Base):
-    __tablename__ = "weights"
+class Meal(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    name: str
+    ingredients: str
+    nutritions: Dict = Field(default_factory=dict, sa_column=Column(JSON))
+    date: datetime = Field(default=datetime.now(UTC))
+    user_id: UUID = Field(foreign_key="user.id")
+    user: "User" = Relationship(back_populates="meals")
 
-    id = Column(Integer, primary_key=True, index=True)
-    weight = Column(Float)
-    date = Column(DateTime, default=datetime.now(UTC))
+    class ConfigDict:
+        arbitrary_types_allowed = True
 
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User")
+
+class Weights(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    weight: float
+    date: datetime = Field(default=datetime.now(UTC))
+    user_id: UUID = Field(foreign_key="user.id")
+    user: "User" = Relationship(back_populates="weights")

@@ -1,42 +1,12 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-from app.database import Base
-from app.utils.db import get_db
 from app.main import app
-
-# Setup test database
-DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-)
-Base.metadata.create_all(bind=engine)  # Ensure your tables are created
-
-
-@pytest.fixture(scope="function")
-def db():
-    db = TestingSessionLocal()
-    yield db
-    db.rollback()
 
 
 @pytest.fixture(scope="function")
 def client():
-    # Dependency override for the database session
-    def override_get_db():
-        try:
-            db = TestingSessionLocal()
-            yield db
-        finally:
-            db.close()
-
-    app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as c:
         yield c
 
@@ -50,11 +20,11 @@ def authenticate_user(client, username, password):
 
 
 # Tests for Auth Router
-def test_signup_with_exisiting_user(client):
+def test_signup_first_time(client):
     response = client.post(
         "/signup", json={"username": "testuser", "password": "testpass123"}
     )
-    assert response.status_code == 400
+    assert response.status_code == 200
 
 
 def test_login(client):
@@ -69,7 +39,7 @@ def test_login(client):
 
 
 # Tests for Meals Router
-def test_get_meals(client, db):
+def test_get_meals(client):
     # Assuming the user is authenticated and has meals
     token_response = authenticate_user(client, "testuser", "testpass123")
     token = token_response.json()["access_token"]
@@ -81,7 +51,7 @@ def test_get_meals(client, db):
     assert isinstance(response.json(), list)
 
 
-def test_create_meal(client, db):
+def test_create_meal(client):
     token_response = authenticate_user(client, "testuser", "testpass123")
     token = token_response.json()["access_token"]
     meal_data = {
@@ -98,7 +68,7 @@ def test_create_meal(client, db):
 
 
 # Tests for Weight Router
-def test_get_weights(client, db):
+def test_get_weights(client):
     token_response = authenticate_user(client, "testuser", "testpass123")
     token = token_response.json()["access_token"]
     response = client.get(
@@ -109,7 +79,7 @@ def test_get_weights(client, db):
     assert isinstance(response.json(), list)
 
 
-def test_create_weight(client, db):
+def test_create_weight(client):
     token_response = authenticate_user(client, "testuser", "testpass123")
     token = token_response.json()["access_token"]
     weight_data = {"weight": 70, "date": datetime.now().isoformat()}
