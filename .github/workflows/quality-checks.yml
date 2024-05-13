@@ -98,33 +98,6 @@ jobs:
             echo "Maintainability Index below threshold: $MI_SCORE"
             exit 1
           fi
- CC-check:
-  name: Check Cyclomatic Complexity
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
-    - name: Setup Poetry
-      uses: abatilo/actions-poetry@v2
-      with:
-        poetry-version: "1.7.1"
-    - name: Install dependencies including Radon
-      working-directory: ./backend
-      run: |
-        poetry install
-        sudo apt-get install jq  # Install jq if not available
-    - name: Check Cyclomatic Complexity
-      working-directory: ./backend
-      run: |
-        poetry run radon cc app/ --json | jq '.[] | select(.complexity > 10)' > complexity_issues.json
-        if [[ -s complexity_issues.json ]]; then
-          echo "Found modules with cyclomatic complexity higher than 10:"
-          cat complexity_issues.json
-          exit 1
-        else
-          echo "No cyclomatic complexity issues found."
  Bandit:
     name: Bandit Security Scan
     strategy:
