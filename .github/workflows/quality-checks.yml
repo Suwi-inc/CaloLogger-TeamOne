@@ -98,7 +98,7 @@ jobs:
             echo "Maintainability Index below threshold: $MI_SCORE"
             exit 1
           fi
-cyclomatic-complexity-check:
+ Cyclomatic-complexity-check:
   name: Check Cyclomatic Complexity
   runs-on: ubuntu-latest
   steps:
