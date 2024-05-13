@@ -121,7 +121,7 @@ jobs:
         run: poetry install
       - name: Run bandit
         working-directory: ./backend
-        run: poetry run bandit .
+        run: poetry run bandit -r .
  Snyk:
     name: Snyk Vulnerability Scan
     strategy:
