@@ -98,7 +98,7 @@ jobs:
             echo "Maintainability Index below threshold: $MI_SCORE"
             exit 1
           fi
- Cyclomatic-complexity-check:
+ CC-check:
   name: Check Cyclomatic Complexity
   runs-on: ubuntu-latest
   steps:
@@ -134,7 +134,7 @@ jobs:
           exit 1
         else
           echo "No cyclomatic complexity issues found."
-Bandit:
+ Bandit:
     name: Bandit Security Scan
     strategy:
       fail-fast: false
