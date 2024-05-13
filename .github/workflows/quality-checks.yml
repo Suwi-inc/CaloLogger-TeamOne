@@ -1,0 +1,140 @@
+name: quality-checks
+on:
+  push:
+    branches:
+      - main
+jobs:
+  Flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies 
+        working-directory: ./backend
+        run: poetry install
+      - name: Run Flake 8
+        working-directory: ./backend
+        run: poetry run flake8 .
+    
+  Tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies 
+        working-directory: ./backend
+        run: poetry install
+      - name: Initalize test DB
+        working-directory: ./backend
+        run: poetry run python -m scripts.create_db
+      - name: Run test coverage
+        working-directory: ./backend
+        run: poetry run pytest --cov=app --cov-branch --cov-report term-missing --cov-fail-under=65 tests/
+
+  maintainability_index:
+    name: Check Maintainability Index
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies including Radon
+        working-directory: ./backend
+        run: |
+          poetry install
+          sudo apt-get install jq  # Install jq if not available
+      - name: Check Maintainability Index
+        working-directory: ./backend
+        run: |
+          MI_SCORE=$(poetry run radon mi app/ --json | jq '[.[] | .mi] | add / length')
+          echo "Average Maintainability Index Score: $MI_SCORE"
+          if (( $(echo "$MI_SCORE < 70" | bc -l) )); then
+            echo "Maintainability Index below threshold: $MI_SCORE"
+            exit 1
+          fi
+
+  test_frontend:
+    name: Run frontend tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install
+      - name: Run tests
+        working-directory: ./frontend
+        run: npm run coverage
+
+  lint_frontend:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install
+      - name: Run ESLint
+        working-directory: ./frontend
+        run: npm run lint
+
+  security:
+    name: security
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.11.0]
+        poetry-version: [1.7.0]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Snyk
+        uses: snyk/actions/setup@master
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install dependencies
+        working-directory: ./backend
+        run: poetry install
+      - name: Run bandit
+        working-directory: ./backend
+        run: poetry run bandit .
+      # - name: Run safety
+      #   working-directory: ./backend
+      #   run: poetry run safety check
+      - name: Snyk check
+        working-directory: ./backend
+        run: |
+          snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
