@@ -98,8 +98,8 @@ jobs:
             echo "Maintainability Index below threshold: $MI_SCORE"
             exit 1
           fi
- Security:
-    name: security
+ Bandit:
+    name: Bandit Security Scan
     strategy:
       fail-fast: false
       matrix:
@@ -112,9 +112,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Snyk
-        uses: snyk/actions/setup@master
-      - name: Run image
+      - name: Setup Poetry
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: ${{ matrix.poetry-version }}
@@ -124,12 +122,32 @@ jobs:
       - name: Run bandit
         working-directory: ./backend
         run: poetry run bandit .
-      # - name: Run safety
-      #   working-directory: ./backend
-      #   run: poetry run safety check
+ Snyk:
+    name: Snyk Vulnerability Scan
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.11.0]
+        poetry-version: [1.7.0]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install dependencies
+        working-directory: ./backend
+        run: poetry install
+      - name: Snyk setup
+        uses: snyk/actions/setup@master
       - name: Snyk check
         working-directory: ./backend
-        run: |
-          snyk test
+        run: snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
