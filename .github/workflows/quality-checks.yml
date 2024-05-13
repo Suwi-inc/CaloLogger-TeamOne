@@ -118,19 +118,10 @@ jobs:
     - name: Check Cyclomatic Complexity
       working-directory: ./backend
       run: |
-        # Run Radon CC and store JSON output
-        COMPLEXITY_RESULTS=$(poetry run radon cc app/ --json)
-        echo "$COMPLEXITY_RESULTS" | jq '.[] | {file, complexity}' > complexity_scores.json
-
-        # Print complexity scores for all modules
-        echo "Cyclomatic Complexity Scores:"
-        cat complexity_scores.json
-
-        # Check if any module exceeds the complexity threshold
-        COMPLEX_MODULES=$(echo "$COMPLEXITY_RESULTS" | jq '.[] | select(.complexity > 10)')
-        if [[ -n "$COMPLEX_MODULES" ]]; then
+        poetry run radon cc app/ --json | jq '.[] | select(.complexity > 10)' > complexity_issues.json
+        if [[ -s complexity_issues.json ]]; then
           echo "Found modules with cyclomatic complexity higher than 10:"
-          echo "$COMPLEX_MODULES" | jq '. | {file, complexity}'
+          cat complexity_issues.json
           exit 1
         else
           echo "No cyclomatic complexity issues found."
